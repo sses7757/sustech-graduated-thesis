@@ -1,4 +1,4 @@
-#import "sustech-master-thesis/lib.typ": documentclass, indent, notation, notations, fake-par
+#import "sustech-graduated-thesis/lib.typ": documentclass, indent, notation, notations, fake-par
 
 // 参考 modern-nju-thesis：
 // 你首先应该安装 https://github.com/nju-lug/modern-nju-thesis/tree/main/fonts/FangZheng 里的所有字体，
@@ -57,6 +57,8 @@
 #decl-page()
 
 // 正文
+#set list(indent: 1em, marker: ([•], [#text(size: 0.5em, baseline: 0.2em, "■")]))
+#set enum(numbering: "(1 a)", indent: 0.35em)
 #show: mainmatter
 
 // 中文摘要
@@ -106,8 +108,6 @@
 
 无序列表编号请自行使用`#set list(indent: 1em, marker: (...))`等方式修改符号和缩进。
 
-#set list(indent: 1em, marker: ([•], [#text(size: 0.5em, baseline: 0.2em, "■")]))
-
 - 无序列表项一
 - 无序列表项二
 	- 无序子列表项一
@@ -116,8 +116,6 @@
 === 有序列表
 
 有序列表编号请自行使用`#set enum(numbering: "(1 a)", indent: 0.35em)`等方式修改编号和缩进。
-
-#set enum(numbering: "(1 a)", indent: 0.35em)
 
 + 有序列表项一#lorem(15)
 + 有序列表项二
@@ -209,6 +207,7 @@ $ <->
   否则就像本行，在第一个句号后加入了额外的空格。
 - 为了使得标题后首行文字可以缩进，本模板使用了`#fake-par`，会导致标题行和下一行可能不同页，如@sec:bib，建议使用手动换行“`\`”解决。
 - 另外，对于行间公式和有序/无序列表之后马上需要另起一段的，需使用`#fake-par`另起一段，仅使用空行无法另起一段。
+- 如需设置全局格式，请在`#show: mainmatter`之前设置，或在设置之后再次应用`#show: mainmatter`，以免模板的某些全局设置失效。
 #fake-par
 注意事项结束。
 
