@@ -35,7 +35,8 @@
 			..(
 					notations.pairs().
 					filter(kv => kv.at(0) != "test").
-					map(kv => print-notations(..kv.at(1)))
+					map(kv => print-notations(..kv.at(1))).
+					filter(v => v != none)
 				).flatten(),
 			..supplements.flatten()
 		))

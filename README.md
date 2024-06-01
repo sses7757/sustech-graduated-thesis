@@ -5,7 +5,8 @@
 ## 特点
 
 - 初步融合了[equate](https://typst.app/universe/package/equate)和[i-figured](https://typst.app/universe/package/i-figured)的公式编号，并提供了一种更方便的公式子编号逻辑。
-- 提供了`#notation`用以自动管理术语，具体使用参见`example.typ`的第1.1.3节。
+- 提供了`#notation`用以自动管理术语，具体使用参见`example.typ`的第1.2节。
+- 提供了自动在行内公式两端添加空格的功能，该功能会自动避免在符号两端添加空格。具体使用参见`example.typ`的第1.4节。
 
 
 ## 使用
@@ -16,3 +17,4 @@
 ## License
 
 This project is licensed under the Apache License Version 2.0.
+This project contains codes originated from https://github.com/nju-lug/modern-nju-thesis, https://github.com/RubixDev/typst-i-figured, and https://github.com/EpicEricEE/typst-plugins/tree/master/equate, which are of MIT license.

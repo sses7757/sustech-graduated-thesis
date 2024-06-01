@@ -1,11 +1,15 @@
 #import "style.typ": 字体
 
 #let print-notations(abbr, name-en, name-cn) = {
-	([#abbr], [#name-cn（#name-en）])
+	if abbr == none {
+		none
+	} else {
+		([#abbr], [#name-cn（#name-en）])
+	}
 }
 
 #let smart-abbr(name-en, name-cn, abbr) = {
-	if abbr != none	{
+	if abbr == none or abbr != auto {
 		abbr
 	} else {
 		let words = name-en.split(regex("[ \-]"))
@@ -20,7 +24,7 @@
 
 #let notations = state("notations", (:))
 
-#let notation(k, name-en: none, name-cn: none, abbr: none, full: false) = {
+#let notation(k, name-en: none, name-cn: none, abbr: auto, full: false) = {
 	let key = lower(k)
 	let c = context (
 		if key not in notations.get()	{
@@ -32,13 +36,17 @@
 				name = name-en.split(" ").map(w => upper(w.at(0)) + w.slice(1)).join(" ")
 				name = name.split("-").map(w => upper(w.at(0)) + w.slice(1)).join("-")
 			}
-			let value = (smart-abbr(name-en, name-cn, abbr), name, name-cn)
-			let ttt = notations.update(n => {
-				n.insert(key, value)
-				n
-			 }
-			)
-			[#text(font: 字体.楷体, value.at(2))（#value.at(1)，#value.at(0)#ttt]
+			if key == "" {
+				[#text(font: 字体.楷体, name-cn)（#name]
+			} else {
+				let value = (smart-abbr(name-en, name-cn, abbr), name, name-cn)
+				let ttt = notations.update(n => {
+						n.insert(key, value)
+						n
+					}
+				)
+				[#text(font: 字体.楷体, value.at(2))（#value.at(1)，#value.at(0)#ttt]
+			}
 		} else {
 			let value = notations.get().at(key)
 			if full == true {

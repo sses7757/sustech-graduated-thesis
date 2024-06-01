@@ -7,6 +7,8 @@
 #import "../utils/indent.typ": fake-par
 #import "../utils/unpairs.typ": unpairs
 
+#let arounds_default = "、，。！？…；：—‘’“”（）【】《》~!@#$%^&*()-_=+/*[]{}|\\:;'\"<>,./?"
+
 #let mainmatter(
 	// documentclass 传入参数
 	twoside: false,
@@ -40,10 +42,12 @@
 	caption-size: 11pt,
 	// figure 计数
 	show-figure: show-figure,
-	// equation 计数
+	// 公式计数
 	show-equation: equate,
-	// equation <= >= 样式
 	slant-glteq: true,
+	math-font: "XITS Math",
+	arounds: arounds_default,
+	math-breakable: false,
 	..args,
 	it,
 ) = {
@@ -90,15 +94,16 @@
 	show heading: reset-counters
 	show figure: show-figure
 	// 3.4 设置 equation 的编号和假段落首行缩进
-	show math.equation.where(block: true): show-equation
+	show math.equation: set text(font: (math-font, ) + fonts.宋体)
+	show math.equation.where(block: true): show-equation.with(breakable: math-breakable)
 	show math.equation.where(block: true): set block(spacing: 0em)
-	show math.equation.where(block: true): set par(leading: 0em)
+	show math.equation.where(block: true): set par(leading: 0.5em)
 	set math.equation(supplement: "公式")
 	set math.equation(numbering: "(1.1.a)")
 	show ref: equate-ref
 	show math.gt.eq: math.class("binary", if slant-glteq {sym.gt.eq.slant} else {sym.gt.eq})
 	show math.lt.eq: math.class("binary", if slant-glteq {sym.lt.eq.slant} else {sym.lt.eq})
-	// 3.5 表格表头置顶 + 不用冒号用空格分割 + 样式
+	// 3.6 表格表头置顶 + 不用冒号用空格分割 + 样式
 	show figure.where(
 		kind: image
 	): set figure(supplement: "图")
@@ -113,10 +118,6 @@
 	): set figure.caption(position: top)
 	set figure.caption(separator: separator)
 	show figure.caption: set text(font: fonts.宋体, size: caption-size)
-	// 3.6 优化列表显示
-	//     术语列表 terms 不应该缩进
-	show terms: set par(first-line-indent: 0pt)
-
 	// 4.  处理标题
 	// 4.1 设置标题的 Numbering
 	set heading(numbering: numbering)
@@ -212,6 +213,36 @@
       both: false,
     )
   ])
+
+	// 3.5 inline 公式两边的空格，必须放在最后
+	show: cont => {
+		if not cont.has("children") {
+			return cont
+		}
+		for (n, item) in cont.children.enumerate() {
+			if item.func() == math.equation and item.block == false {
+				if n > 0 {
+					if cont.children.at(n - 1).has("text") {
+						let prev = cont.children.at(n - 1).text.last()
+						if not arounds_default.contains(prev)  {
+							[ ]
+						}
+					}
+				}
+				item
+				if n < cont.children.len() - 1 {
+					if cont.children.at(n + 1).has("text") {
+						let next = cont.children.at(n + 1).text.first()
+						if not arounds_default.contains(next) {
+							[ ]
+						}
+					}
+				}
+			} else {
+				item
+			}
+		}
+	}
 
 	it
 }

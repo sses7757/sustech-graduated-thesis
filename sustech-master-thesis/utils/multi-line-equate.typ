@@ -1,3 +1,8 @@
+// NOTICE about license
+// The majority of this file is originated from "EpicEricEE/typst-plugins/equate" with MIT license, with my modification to fit current demands.
+// The `show-figure` function is originated from "RubixDev/typst-i-figured" with MIT license, with my modification to work with the rest of the functions.
+
+
 // Element function for alignment points.
 #let align-point = $&$.body.func()
 
@@ -248,7 +253,8 @@
   let _ = if "counter" in dic { dic.remove("counter") }
   dic + (numbering: n => _typst-numbering(numbering, ..numbers, n))
 }
-// See `i-figured.show-figure`
+
+
 #let show-figure(
   it,
   level: 1,
@@ -295,6 +301,7 @@
 // and displayed at every line, optionally with sub-numbering.
 //
 // ### Parameters:
+// - breakable: wheteher the multi-line equations can be break to different pages
 // - sub-numbering: whether to use the last number in the `math.equation.numbering` as the sub number
 // - zero-fill: whether to fill 0s for the first (few) numbers when not present
 // - leading-zero: wheter to set the first heading number to 0 if it is not numbered
@@ -314,6 +321,7 @@
 // #set math.equation(numbering: "(1.1.a)")
 // ```
 #let equate(
+	breakable: false,
 	sub-numbering: true,
 	zero-fill: true,
 	leading-zero: true,
@@ -465,29 +473,31 @@
 	state.update(_ => sub-numbering)
 
 	// Layout equation as grid to allow page breaks.
-	grid(
-		columns: 1,
-		row-gutter: par.leading,
-		..realign(lines).enumerate().map(((i, line)) => {
-			let sub-number = numbered.position(n => n == i)
-			let number = if it.numbering == none {
-				none
-			} else if sub-number == none {
-				// Step back counter as this equation should not be counted.
-				counter(math.equation).update(n => n - 1)
-			} else if sub-numbering and numbered.len() > 1 {
-				numbering(it.numbering, ..main-number, sub-number + 1)
-			} else {
-				numbering(it.numbering, ..(main-number.slice(0, -1) + (main-number.at(-1) + sub-number, )))
-			}
+	block(breakable: breakable,
+		grid(
+			columns: 1,
+			row-gutter: par.leading,
+			..realign(lines).enumerate().map(((i, line)) => {
+				let sub-number = numbered.position(n => n == i)
+				let number = if it.numbering == none {
+					none
+				} else if sub-number == none {
+					// Step back counter as this equation should not be counted.
+					counter(math.equation).update(n => n - 1)
+				} else if sub-numbering and numbered.len() > 1 {
+					numbering(it.numbering, ..main-number, sub-number + 1)
+				} else {
+					numbering(it.numbering, ..(main-number.slice(0, -1) + (main-number.at(-1) + sub-number, )))
+				}
 
-			layout-line(
-				line,
-				number: number,
-				number-align: number-align,
-				number-width: max-number-width
-			)
-		})
+				layout-line(
+					line,
+					number: number,
+					number-align: number-align,
+					number-width: max-number-width
+				)
+			})
+		)
 	)
 	main-num
 

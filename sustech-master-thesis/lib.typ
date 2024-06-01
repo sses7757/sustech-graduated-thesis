@@ -1,6 +1,6 @@
 #import "@preview/anti-matter:0.0.2": anti-inner-end as mainmatter-end
 #import "layouts/doc.typ": doc
-#import "layouts/mainmatter.typ": mainmatter
+#import "layouts/mainmatter.typ": mainmatter, arounds_default
 #import "layouts/appendix.typ": appendix
 #import "pages/fonts-display-page.typ": fonts-display-page
 #import "pages/outline-page.typ": outline-page
@@ -18,8 +18,6 @@
 #import "utils/custom-numbering.typ": custom-numbering
 #import "utils/custom-heading.typ": heading-display, active-heading, current-heading
 #import "utils/indent.typ": indent, fake-par
-#import "@preview/i-figured:0.2.4": show-figure, show-equation
-#import "@preview/equate:0.1.0": equate
 #import "utils/style.typ": 字体, 字号
 #import "utils/state-notations.typ": notation, notations
 
@@ -29,6 +27,10 @@
 	twoside: true,  // 双面模式，会加入空白页，便于打印
 	anonymous: false,  // 盲审模式
 	bibliography: none,  // 原来的参考文献函数
+	math-font: "XITS Math", // 公式字体，应预先安装在系统中或放在根目录下
+	slant-glteq: true, // 公式 <= >= 样式
+	math-breakable: false, // 多行公式可否分割到多页
+	arounds: arounds_default, // 公式不加空格的符号
 	fonts: (:),  // 字体，应传入「宋体」、「黑体」、「楷体」、「仿宋」、「等宽」
 	info: (:),
 ) = {
@@ -65,7 +67,6 @@
 		email: "xyz@mail.sustech.edu.cn",
 		school-code: "518055",
 		degree: "MEng",
-		math-font: "XITS Math",
 	) + info
 
 	(
@@ -80,11 +81,13 @@
 			doc(
 				..args,
 				info: info + args.named().at("info", default: (:)),
-				fonts: fonts,
 			)
 		},
 		mainmatter: (..args) => {
 			mainmatter(
+					slant-glteq: slant-glteq,
+					math-font: math-font,
+					arounds: arounds,
 					twoside: twoside,
 					display-header: true,
 					..args,
