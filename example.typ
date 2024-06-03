@@ -1,4 +1,6 @@
-#import "sustech-graduated-thesis/lib.typ": documentclass, indent, notation, notations, fake-par
+#import "sustech-graduated-thesis/lib.typ": documentclass, indent, notation, notations, fake-par, 字体
+#import "sustech-graduated-thesis/utils/math-utils.typ": sfrac, svec
+
 
 // 参考 modern-nju-thesis：
 // 你首先应该安装 https://github.com/nju-lug/modern-nju-thesis/tree/main/fonts/FangZheng 里的所有字体，
@@ -41,7 +43,7 @@
 		submit-date: datetime.today(),
 	),
 	// 参考文献源
-	bibliography: bibliography.with("example.bib"),
+	bibliography: bibliography.with("example.bib", style: "sustech-graduated-thesis/gb-t-7714-2015-numeric.csl"),
 )
 
 // 文稿设置
@@ -57,8 +59,8 @@
 #decl-page()
 
 // 正文
-#set list(indent: 1em, marker: ([•], [#text(size: 0.5em, baseline: 0.2em, "■")]))
-#set enum(numbering: "(1 a)", indent: 0.35em)
+#set list(indent: 1.1em, marker: ([•], [#text(size: 0.5em, baseline: 0.2em, "■")]))
+#set enum(numbering: "（1 a）", indent: 0em)
 #show: mainmatter
 
 // 中文摘要
@@ -115,7 +117,7 @@
 
 === 有序列表
 
-有序列表编号请自行使用`#set enum(numbering: "(1 a)", indent: 0.35em)`等方式修改编号和缩进。
+有序列表编号请自行使用`#set enum(numbering: "（1 a）", indent: 0em)`等方式修改编号和缩进。
 
 + 有序列表项一#lorem(15)
 + 有序列表项二
@@ -129,6 +131,8 @@
 引用已经定义的术语，使用`#notation("key", full: true|false|none)`，其中键值`key`的大小写不敏感，如#notation("DFT")、#notation("bana", full: none)和#notation("dft", full: true)。
 
 文档中使用`notation`添加的所有术语均会自动出现在符号表中；同一个`key`，之后的定义会覆盖之前的定义。
+
+本模板还提供了快速定义和引用术语的方式，如全称“#notation("qft", "量子场论", "Quantum Field Theory")”（后两个顺序可互换），无键值“#notation("量子力学", "Quantum Mechanics")”。快速引用如@no:qft和@no:qft-full。
 
 
 == 图表
@@ -182,12 +186,20 @@ $
 $ <->
 测试引用@eqt:final1。注意到默认情况下，多行公式不能分割到多页上，如需改变，修改`math-breakable`选项。
 
-本模板加入了自动在行内公式两端添加空格的功能，如$sin(x)$，该功能会自动避免在符号两端添加空格。修改`arounds`选项以指定哪些符号两端不添加空格。
+行内公式自动添加空格功能：
+- 本模板加入了自动在行内公式两端添加空格的功能，如$sin(x)$，该功能会自动避免在符号两端添加空格。修改`arounds`选项以指定哪些符号两端不添加空格。
+- 无序和有序列表以及图、表中的行内公式两端也会自动添加。
+- 由于Typst本身没有提供类似LaTeX中的`\sfrac`和`\vec`类似的功能（`arrow()`的箭头默认大小对于某些字符过于巨大），因此，本模板在`utils/math-utils.typ`内提供了类似的函数——`sfrac`和`svec`。如$sfrac(A_L, B_d)$而非$A_L \/ B_d$，$svec(N)$而非$arrow(N)$。
 
 
 == 参考文献 <sec:bib>
 
 可以像这样引用参考文献：图书#[@蒋有绪1998]和会议#[@中国力学学会1990]。
+
+注意事项：
+- 若引用的key以中文开始，请按照上述写法编写引用。
+- 若为全英文引用key，可以使用类似@Jiang1998的写法，无需包裹在content块内部，也不会自动添加不需要的空格，因为本模板的`equate-ref`函数处理了这种情况。该处理同样适用于其他引用，如@eqt:final1引用。
+- 若引用的key不以中文开始却含有中文，本模板目前*不能*正确处理，会出现错误，请自行修改引用键值。
 
 == 代码块
 

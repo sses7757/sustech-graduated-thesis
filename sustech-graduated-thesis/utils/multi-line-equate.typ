@@ -237,53 +237,61 @@
 #let _prefix = "i-figured-"
 #let _typst-numbering = numbering
 #let _prepare-dict(it, level, zero-fill, leading-zero, numbering) = {
-  let numbers = counter(heading).at(it.location())
-  // if zero-fill is true add trailing zeros until the level is reached
-  while zero-fill and numbers.len() < level { numbers.push(0) }
-  // only take the first `level` numbers
-  if numbers.len() > level { numbers = numbers.slice(0, level) }
-  // strip a leading zero if requested
-  if not leading-zero and numbers.at(0, default: none) == 0 {
-    numbers = numbers.slice(1)
-  }
+	let numbers = counter(heading).at(it.location())
+	// if zero-fill is true add trailing zeros until the level is reached
+	while zero-fill and numbers.len() < level { numbers.push(0) }
+	// only take the first `level` numbers
+	if numbers.len() > level { numbers = numbers.slice(0, level) }
+	// strip a leading zero if requested
+	if not leading-zero and numbers.at(0, default: none) == 0 {
+		numbers = numbers.slice(1)
+	}
 
-  let dic = it.fields()
-  let _ = if "body" in dic { dic.remove("body") }
-  let _ = if "label" in dic { dic.remove("label") }
-  let _ = if "counter" in dic { dic.remove("counter") }
-  dic + (numbering: n => _typst-numbering(numbering, ..numbers, n))
+	let dic = it.fields()
+	let _ = if "body" in dic { dic.remove("body") }
+	let _ = if "label" in dic { dic.remove("label") }
+	let _ = if "counter" in dic { dic.remove("counter") }
+	dic + (numbering: n => _typst-numbering(numbering, ..numbers, n))
 }
 
 
 #let show-figure(
-  it,
-  level: 1,
-  zero-fill: true,
-  leading-zero: true,
-  numbering: "1.1",
-  extra-prefixes: (:),
-  fallback-prefix: "fig:",
+	it,
+	level: 1,
+	zero-fill: true,
+	leading-zero: true,
+	numbering: "1.1",
+	extra-prefixes: (:),
+	fallback-prefix: "fig:",
+	fig-skip: (below: 1.5em, above: 1.5em),
+	line-width: 21cm - 6cm,
 ) = {
-  if ((type(it.kind) == str and it.kind.starts-with(_prefix)) or
-	 		it.kind == math.equation) {
-    it
-  } else {
-    let figure = figure(
-      it.body,
-      .._prepare-dict(it, level, zero-fill, leading-zero, numbering),
-      kind: _prefix + repr(it.kind),
-    )
-    if it.has("label") {
-      let prefixes = (table: "tbl:", raw: "lst:") + extra-prefixes
-      let new-label = label(prefixes.at(
-          if type(it.kind) == str { it.kind } else { repr(it.kind) },
-          default: fallback-prefix,
-      ) + str(it.label))
-      [#figure #new-label]
-    } else {
-      figure
-    }
-  }
+	if (type(it.kind) == str and it.kind.starts-with(_prefix)) or it.kind == math.equation {
+		return it
+	}
+	let f = figure(
+		it.body,
+		.._prepare-dict(it, level, zero-fill, leading-zero, numbering),
+		kind: _prefix + repr(it.kind),
+	)
+	let res = if it.has("label") {
+		let prefixes = (table: "tbl:", raw: "lst:") + extra-prefixes
+		let new-label = label(prefixes.at(
+				if type(it.kind) == str { it.kind } else { repr(it.kind) },
+				default: fallback-prefix,
+		) + str(it.label))
+		[#f #new-label]
+	} else {
+		f
+	}
+	// move figure spacing and caption algin adjustment here to prevent unwanted spacing in multi-line equations
+	show figure: set block(..fig-skip)
+	if measure(it.caption).width > line-width {
+		show figure.caption: set align(start + top)
+		res
+	} else {
+		res
+	}
 }
 
 
@@ -332,7 +340,7 @@
 	it
 ) = {
 	// Allow a way to make default equations.
-	if (not it.block) {
+	if (not it.block or it.has("label") and str(it.label).starts-with(prefix)) {
 		return it
 	}
 	if ((not it.has("numbering") or it.numbering == none or numbering(it.numbering, 1) == none) and
@@ -517,7 +525,10 @@
 	}
 }
 
-// Add support for sub-numbering in references. The parameters shall be consistent with `equate`'s.
+
+#import "state-notations.typ": notation, notations, notation-prefix, notation-full-suffix
+// Add support for sub-numbering in references as well as notation references and CJK fix for references.
+// The parameters shall be consistent with `equate`'s.
 #let equate-ref(
 	it, 
 	unnumbered-label: "-",
@@ -528,48 +539,67 @@
 			str(it.target) != unnumbered-label,
 			message: "cannot reference equation without numbering."
 		)
-		if it.element == none { return it }
-
-		let nums = counter(heading).at(it.element.location()).slice(0, 1)
-
-		// Normal equation and re-aligned eqautions
-		if it.element.func() == math.equation {
-			nums = nums + counter(math.equation).at(it.element.location())
-		} else {
-			if it.element.func() != figure { return it }
-			if it.element.kind != math.equation { return it }
-			if it.element.body == none { return it }
-			if it.element.body.func() != metadata { return it }
-			// Display correct number, depending on whether sub-numbering was enabled.
-			nums = if state.at(it.element.location()) {
-				nums + it.element.body.value
-			} else {
-				// (3, 1): 3 + 1 - 1 = 3
-				// (3, 2): 3 + 2 - 1 = 4
-				nums + (it.element.body.value.first() + it.element.body.value.slice(1).sum(default: 1) - 1,)
+		if str(it.target).starts-with(notation-prefix) {
+			let notation-key = str(it.target).slice(notation-prefix.len())
+			let full = notation-key.ends-with(notation-full-suffix)
+			notation-key = notation-key.trim(notation-full-suffix)
+			if notation-key in notations.at(it.location()) {
+				return notation(notation-key, full: full)
 			}
 		}
+		if it.element != none {
+			// equation ref
+			let nums = counter(heading).at(it.element.location()).slice(0, 1)
 
-		assert(
-			it.element.numbering != none,
-			message: "cannot reference equation without numbering."
-		)
-		assert(
-			str(it.target).starts-with(prefix),
-			message: "cannot reference equation without prefix \"" + prefix + "\"."
-		)
+			// Normal equation and re-aligned eqautions
+			if it.element.func() == math.equation {
+				nums = nums + counter(math.equation).at(it.element.location())
+			} else {
+				if it.element.func() != figure { return it }
+				if it.element.kind != math.equation { return it }
+				if it.element.body == none { return it }
+				if it.element.body.func() != metadata { return it }
+				// Display correct number, depending on whether sub-numbering was enabled.
+				nums = if state.at(it.element.location()) {
+					nums + it.element.body.value
+				} else {
+					// (3, 1): 3 + 1 - 1 = 3
+					// (3, 2): 3 + 2 - 1 = 4
+					nums + (it.element.body.value.first() + it.element.body.value.slice(1).sum(default: 1) - 1,)
+				}
+			}
 
-		let num = numbering(it.element.numbering,
-			..nums
-		)
-		let supplement = if it.supplement == auto {
-			it.element.supplement
+			assert(
+				it.element.numbering != none,
+				message: "cannot reference equation without numbering."
+			)
+			assert(
+				str(it.target).starts-with(prefix),
+				message: "cannot reference equation without prefix \"" + prefix + "\"."
+			)
+
+			let num = numbering(it.element.numbering,
+				..nums
+			)
+			let supplement = if it.supplement == auto {
+				it.element.supplement
+			} else {
+				it.supplement
+			}
+			
+			link(
+				it.element.location(),
+				if supplement not in ([], none) [#supplement#sep#num] else [#num]
+			)
 		} else {
-			it.supplement
+			// CJK ref
+			let key = it.citation.key
+			let p = str(key).position(regex("\p{script=Han}"))
+			if p == none or p == 0 {
+				return it
+			}
+			let new-key = label(str(key).slice(0, p))
+			let rest = str(key).slice(p)
+			[#ref(new-key)#rest]
 		}
-		
-		link(
-			it.element.location(),
-			if supplement not in ([], none) [#supplement#sep#num] else [#num]
-		)
 }

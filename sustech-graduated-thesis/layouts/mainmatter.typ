@@ -7,7 +7,7 @@
 #import "../utils/indent.typ": fake-par
 #import "../utils/unpairs.typ": unpairs
 
-#let arounds_default = "、，。！？…；：—‘’“”（）【】《》~!@#$%^&*()-_=+/*[]{}|\\:;'\"<>,./?"
+#let arounds_default = "、，。！？…；：—‘’“”（）【】《》~!@#$%^&*()-_=+/*[]{}|\\:;'\"<>,./? 　"
 
 #let mainmatter(
 	// documentclass 传入参数
@@ -99,11 +99,12 @@
 	show math.equation.where(block: true): set block(spacing: 0em)
 	show math.equation.where(block: true): set par(leading: 0.5em)
 	set math.equation(supplement: "公式")
-	set math.equation(numbering: "(1.1.a)")
+	set math.equation(numbering: "(1-1a)")
 	show ref: equate-ref
 	show math.gt.eq: math.class("binary", if slant-glteq {sym.gt.eq.slant} else {sym.gt.eq})
 	show math.lt.eq: math.class("binary", if slant-glteq {sym.lt.eq.slant} else {sym.lt.eq})
 	// 3.6 表格表头置顶 + 不用冒号用空格分割 + 样式
+	set figure(gap: 0.75em)
 	show figure.where(
 		kind: image
 	): set figure(supplement: "图")
@@ -215,34 +216,62 @@
   ])
 
 	// 3.5 inline 公式两边的空格，必须放在最后
-	show: cont => {
+	let eq-wrap(cont) = {
 		if not cont.has("children") {
 			return cont
 		}
-		for (n, item) in cont.children.enumerate() {
-			if item.func() == math.equation and item.block == false {
-				if n > 0 {
-					if cont.children.at(n - 1).has("text") {
-						let prev = cont.children.at(n - 1).text.last()
-						if not arounds_default.contains(prev)  {
-							[ ]
-						}
-					}
-				}
-				item
-				if n < cont.children.len() - 1 {
-					if cont.children.at(n + 1).has("text") {
-						let next = cont.children.at(n + 1).text.first()
-						if not arounds_default.contains(next) {
-							[ ]
-						}
-					}
+		let cont-fn = cont.func()
+		let cont-fs = cont.fields()
+		let _ = cont-fs.remove("children")
+
+		let map-fn = ((n, elem)) => {
+			if elem.func() in (list.item, enum.item, figure, table, table.cell) {
+				let fs = elem.fields()
+				let _ = fs.remove("body")
+				let lab = if "label" in fs {fs.remove("label")}
+				let _ = if "caption" in fs {fs.insert("caption", eq-wrap(elem.caption.body))}
+				let fn = elem.func()
+				let wrapped = eq-wrap(elem.body)
+				if lab != none and elem.func() in (list.item, enum.item, figure) {
+					[#fn(wrapped, ..fs)#lab]
+				} else {
+					fn(wrapped, ..fs)
 				}
 			} else {
-				item
+				if elem.func() == math.equation and elem.block == false {
+					if n > 0 {
+						if cont.children.at(n - 1).has("text") {
+							let prev = cont.children.at(n - 1).text.last()
+							if not arounds.contains(prev)  {
+								[ ]
+							}
+						}
+					}
+					elem
+					if n < cont.children.len() - 1 {
+						if cont.children.at(n + 1).has("text") {
+							let next = cont.children.at(n + 1).text.first()
+							if not arounds.contains(next) {
+								[ ]
+							}
+						}
+					}
+				} else {
+					elem
+				}
 			}
 		}
+
+		if repr(cont-fn) == "sequence" {
+			for (n, elem) in cont.children.enumerate() {
+				map-fn((n, elem))
+			}
+		} else {
+			let new-child = cont.children.enumerate().map(map-fn)
+			cont-fn(..new-child, ..cont-fs)
+		}
 	}
+	show: eq-wrap
 
 	it
 }
