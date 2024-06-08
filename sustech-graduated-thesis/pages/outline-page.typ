@@ -3,6 +3,24 @@
 #import "../utils/custom-heading.typ": heading-display, active-heading, current-heading
 #import "../utils/style.typ": 字号, 字体
 
+#let _outline-end = state("outline-end", "outline")
+#let outline-pagenum() = (footer:
+	context [
+		#set align(center)
+		#set text(字号.五号)
+		#counter(page).display(
+			"I of I",
+			both: false,
+		)
+	]
+)
+#let outline-final(name, twoside: true) = {
+	_outline-end.update(_ => name)
+	context if _outline-end.final() == name {
+		page-break(twoside: twoside)
+	}
+}
+
 // 目录生成
 #let outline-page(
 	// documentclass 传入参数
@@ -42,16 +60,9 @@
 	}
 
 	// 2.  正式渲染
+	set page(..outline-pagenum())
 	page-break(twoside: twoside)
 	counter(page).update(1)
-	set page(footer: context [
-		#set align(center)
-		#set text(字号.五号)
-		#counter(page).display(
-			"I of I",
-			both: false,
-		)
-	])
 
 	// 默认显示的字体
 	set text(font: reference-font, size: reference-size)
@@ -80,5 +91,5 @@
 
 	// 显示目录
 	outline(title: none, depth: depth)
-
+	outline-final("outline", twoside: twoside)
 }

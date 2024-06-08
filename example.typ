@@ -1,4 +1,4 @@
-#import "sustech-graduated-thesis/lib.typ": documentclass, indent, notation, notations, fake-par, 字体
+#import "sustech-graduated-thesis/lib.typ": documentclass, indent, notation, fake-par, 字体
 #import "sustech-graduated-thesis/utils/math-utils.typ": sfrac, svec
 
 
@@ -88,7 +88,7 @@
 #list-of-tables()
 
 // 符号表
-#context notation-page(notations.final(), supplements: (
+#notation-page(supplements: (
 		([$lambda$], "特征值"),
 		([$pi$], "圆周率"),
 	)
