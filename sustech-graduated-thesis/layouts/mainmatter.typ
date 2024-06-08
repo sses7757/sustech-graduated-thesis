@@ -48,6 +48,7 @@
 	math-font: "XITS Math",
 	arounds: arounds_default,
 	math-breakable: false,
+	sep-ref: true,
 	..args,
 	it,
 ) = {
@@ -81,6 +82,25 @@
 	// 3.  设置基本样式
 	// 3.1 文本和段落样式
 	set text(hyphenate: true, ..text-args)
+	show "“": set text(font: fonts.宋体.slice(1))
+	show "”": set text(font: fonts.宋体.slice(1))
+	show "”、": [”#h(-0.25em)、]
+	show "”，": [”#h(-0.25em)，]
+	show "”。": [”#h(-0.25em)。]
+	show "”！": [”#h(-0.25em)！]
+	show "”？": [”#h(-0.25em)？]
+	show "”；": [”#h(-0.25em)；]
+	show "”：": [”#h(-0.25em)：]
+	show "”—": [”#h(-0.25em)—]
+	show "”）": [”#h(-0.25em)）]
+	show "）”": [）#h(-0.25em)”]
+	show "、“": [、#h(-0.25em)“]
+	show "，“": [，#h(-0.25em)“]
+	show "，“": [，#h(-0.25em)“]
+	show "。“": [。#h(-0.25em)“]
+	show "！“": [！#h(-0.25em)“]
+	show "？“": [？#h(-0.25em)“]
+	show "（“": [（#h(-0.25em)“]
 	set par(
 		leading: leading,
 		justify: justify,
@@ -100,7 +120,7 @@
 	show math.equation.where(block: true): set par(leading: 0.5em)
 	set math.equation(supplement: "公式")
 	set math.equation(numbering: "(1-1a)")
-	show ref: equate-ref
+	show ref: equate-ref.with(sep-ref: sep-ref)
 	show math.gt.eq: math.class("binary", if slant-glteq {sym.gt.eq.slant} else {sym.gt.eq})
 	show math.lt.eq: math.class("binary", if slant-glteq {sym.lt.eq.slant} else {sym.lt.eq})
 	// 3.6 表格表头置顶 + 不用冒号用空格分割 + 样式
@@ -109,16 +129,26 @@
 		kind: image
 	): set figure(supplement: "图")
 	show figure.where(
+		kind: image
+	): set block(above: 1em, below: 1.5em)
+	show figure.where(
 		kind: table
 	): set figure(supplement: "表")
+	show figure.where(
+		kind: table
+	): set figure.caption(position: top)
+	show figure.where(
+		kind: table
+	): set block(above: 1.5em, below: 1em)
 	show figure.where(
 		kind: raw
 	): set figure(supplement: "代码")
 	show figure.where(
-		kind: table
-	): set figure.caption(position: top)
+		kind: raw
+	): set block(above: 1em, below: 1.5em)
 	set figure.caption(separator: separator)
 	show figure.caption: set text(font: fonts.宋体, size: caption-size)
+	show table: set text(size: caption-size)
 	// 4.  处理标题
 	// 4.1 设置标题的 Numbering
 	set heading(numbering: numbering)
@@ -161,9 +191,9 @@
 		let num-str = (e.numbering)(..counter(heading).at(e.location()))
 		num-str = num-str.trim()
 		if e.level == 1 {
-			num-str
+			link(it.element.location(), num-str)
 		} else {
-			[第#num-str 节]
+			link(it.element.location(), [第#num-str 节])
 		}
 	}
 
@@ -238,7 +268,7 @@
 					fn(wrapped, ..fs)
 				}
 			} else {
-				if elem.func() == math.equation and elem.block == false {
+				if (elem.func() == math.equation and elem.block == false) or repr(elem) == "context()" {
 					if n > 0 {
 						if cont.children.at(n - 1).has("text") {
 							let prev = cont.children.at(n - 1).text.last()

@@ -21,6 +21,12 @@
 #import "utils/style.typ": 字体, 字号
 #import "utils/state-notations.typ": notation, notations
 
+#import "@preview/unify:0.6.0": num as _num, qty as _qty, numrange as _numrange, qtyrange as _qtyrange
+#let num(value) = _num(value, multiplier: "×", thousandsep: ",")
+#let numrange(lower, upper) = _numrange(lower, upper, multiplier: "×", thousandsep: ",")
+#let qty(value, unit, rawunit: false) = _qty(value, unit, rawunit: rawunit, multiplier: "×", thousandsep: ",")
+#let qtyrange(lower, upper, unit, rawunit: false) = _qtyrange(lower, upper, unit, rawunit: rawunit, multiplier: "×", thousandsep: ",")
+
 // 使用函数闭包特性，通过 `documentclass` 函数类进行全局信息配置，然后暴露出拥有了全局配置的、具体的 `layouts` 和 `templates` 内部函数。
 #let documentclass(
 	doctype: "final",  // "proposal" | "midterm" | "final"，文章类型，默认为最终报告 final
@@ -31,6 +37,7 @@
 	slant-glteq: true, // 公式 <= >= 样式
 	math-breakable: false, // 多行公式可否分割到多页
 	arounds: arounds_default, // 公式不加空格的符号
+	sep-ref: true, // 是否自动将@ref与其跟随的中文字符分开处理，使用true时应避免含有中文的label或bib
 	fonts: (:),  // 字体，应传入「宋体」、「黑体」、「楷体」、「仿宋」、「等宽」
 	info: (:),
 ) = {
@@ -88,6 +95,7 @@
 					slant-glteq: slant-glteq,
 					math-font: math-font,
 					arounds: arounds,
+					sep-ref: true,
 					twoside: twoside,
 					display-header: true,
 					..args,

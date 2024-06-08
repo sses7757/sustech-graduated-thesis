@@ -64,7 +64,7 @@
 		)
 	}
 
-	let info-value( body, info-inset: info-inset, no-stroke: false) = {
+	let info-value(body, info-inset: info-inset, no-stroke: false) = {
 		set align(center)
 		rect(
 			width: 100%,
@@ -75,7 +75,7 @@
 				size: 字号.三号,
 				bottom-edge: "descender",
 				weight: "bold",
-				body,
+				if type(body) == datetime [#body.display("[year]年[month]月[day]日")] else {body},
 			),
 		)
 	}
@@ -135,7 +135,7 @@
 		info-value(info.student-id),
 
 		info-key(if doctype == "midterm" {"中 期 考 核 日 期"} else {"开 题 报 告 日 期"}),
-		info-value(info.defend-date),
+		info-value(info.submit-date),
 	))
 
 	v(字号.二号 * 6)

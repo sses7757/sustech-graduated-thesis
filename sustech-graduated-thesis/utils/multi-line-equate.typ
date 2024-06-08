@@ -263,7 +263,6 @@
 	numbering: "1.1",
 	extra-prefixes: (:),
 	fallback-prefix: "fig:",
-	fig-skip: (below: 1.5em, above: 1.5em),
 	line-width: 21cm - 6cm,
 ) = {
 	if (type(it.kind) == str and it.kind.starts-with(_prefix)) or it.kind == math.equation {
@@ -285,7 +284,6 @@
 		f
 	}
 	// move figure spacing and caption algin adjustment here to prevent unwanted spacing in multi-line equations
-	show figure: set block(..fig-skip)
 	if measure(it.caption).width > line-width {
 		show figure.caption: set align(start + top)
 		res
@@ -533,7 +531,8 @@
 	it, 
 	unnumbered-label: "-",
 	prefix: "eqt:",
-	sep: ""
+	sep: "",
+	sep-ref: true,
 ) = {
 		assert(
 			str(it.target) != unnumbered-label,
@@ -591,7 +590,7 @@
 				it.element.location(),
 				if supplement not in ([], none) [#supplement#sep#num] else [#num]
 			)
-		} else {
+		} else if sep-ref {
 			// CJK ref
 			let key = it.citation.key
 			let p = str(key).position(regex("\p{script=Han}"))
@@ -601,5 +600,7 @@
 			let new-key = label(str(key).slice(0, p))
 			let rest = str(key).slice(p)
 			[#ref(new-key)#rest]
+		} else {
+			it
 		}
 }

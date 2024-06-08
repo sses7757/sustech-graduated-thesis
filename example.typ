@@ -21,6 +21,7 @@
 	// slant-glteq: true, // 公式 <= >= 样式，按照中文格式要求，所有大于等于、小于等于号均替换为对应倾斜等号变体
 	// arounds: arounds_default, // 公式不加空格的符号，默认值为 mainmatter.arounds_default
 	// math-breakable: false, // 多行公式可否分割到多页
+	// sep-ref: true, // 是否自动将@ref与其跟随的中文字符分开处理，使用true时应避免含有中文的label或bib
 	info: (
 		title: ("基于Typst的", "南方科技大学学位论文"),
 		title-en: "SUSTech Thesis Template for Typst",
@@ -199,7 +200,7 @@ $ <->
 注意事项：
 - 若引用的key以中文开始，请按照上述写法编写引用。
 - 若为全英文引用key，可以使用类似@Jiang1998的写法，无需包裹在content块内部，也不会自动添加不需要的空格，因为本模板的`equate-ref`函数处理了这种情况。该处理同样适用于其他引用，如@eqt:final1引用。
-- 若引用的key不以中文开始却含有中文，本模板目前*不能*正确处理，会出现错误，请自行修改引用键值。
+- 若引用的key不以中文开始却含有中文，本模板在`sep-ref = true`的情况下目前*不能*正确处理，会出现错误，请自行修改引用键值或关闭`sep-ref`并全部使用上述写法编写引用。
 
 == 代码块
 
@@ -222,6 +223,62 @@ $ <->
 - 如需设置全局格式，请在`#show: mainmatter`之前设置，或在设置之后再次应用`#show: mainmatter`，以免模板的某些全局设置失效。
 #fake-par
 注意事项结束。
+
+
+== 表格自动填充
+
+Typst提供了完整的文件读取和字符串处理处理功能，可以通过少量脚本代码自动生成表格内容，如@tbl:opt-res所示，该脚本读取了`test.csv`文件，将其奇数行视为不同方法在不同问题上的优化结果的平均值，偶数行视为其上一行的标准差，并统一加粗每一个问题上的最优结果。
+
+#{
+	import "@preview/oxifmt:0.2.1": strfmt
+	let res-csv = csv("test.csv")
+	let num-format(n, min-val: 0, format: "3E2") = {
+		if format == none {
+			if n == min-val [*#str(n)*] else [#str(n)]
+		} else {
+			let format-main = format.position("E") + 1
+			let fmt = strfmt("{:." + format.slice(0, format-main) + "}", n)
+			fmt = fmt.replace("E", "E+").replace("E+-", "E-")
+			let p = fmt.position(regex("E[+-][0-9]+")) + 2
+			let exp-n = strfmt("{:0" + format.slice(format-main) + "}", int(fmt.slice(p)))
+			fmt = fmt.slice(0, p) + exp-n
+			fmt = if fmt.starts-with("-") {fmt} else {"-" + fmt}
+			fmt = fmt.replace("-", "−")
+			if n == min-val [*#fmt*] else [#fmt]
+		}
+	}
+	let parse-row(csv-str, row-idx) = {
+		let row = (table.cell(rowspan: 2)[F#(row-idx + 1)], [Mean])
+		let means = csv-str.at(row-idx * 2).map(x => eval(x))
+		let stds = csv-str.at(row-idx * 2 + 1).map(x => eval(x))
+		let min-mean = calc.min(..means)
+		let min-std = calc.min(..stds)
+		row += means.map(num-format.with(min-val: min-mean))
+		row += ([Std],) + stds.map(num-format.with(min-val: min-std))
+		row
+	}
+	let _next-page-state = state("next-page-state", false)
+	show figure: set block(breakable: true)
+	[#figure(
+		table(
+			columns: (0.3fr, 0.7fr,) + (1fr, ) * 6,
+			align: center + horizon,
+			stroke: 0pt,
+			table.hline(stroke: 1pt),
+			table.header(
+				table.cell(colspan: 2)[*函数*], ..range(1, 7).map(x => [方法#x]),
+			),
+			table.hline(stroke: 0.5pt),
+			..range(0, int(res-csv.len() / 2)).map(x => parse-row(res-csv, x)).flatten(),
+			table.hline(stroke: 1pt),
+			table.footer(table.cell(colspan: 8, align: right + bottom,
+				context if _next-page-state.get() [] else [续下页#_next-page-state.update(_ => true)]
+			))
+		),
+		caption: [表格内容自动生成测试]
+	) <opt-res>
+	]
+}
 
 
 = 正文 <chap:2>
