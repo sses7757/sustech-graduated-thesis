@@ -103,9 +103,9 @@
 	)
 	v(字号.小一)
 	// 题目
-	text(size: 字号.小二, font: fonts.宋体, spacing: 100%, weight: "bold")[
-		题目：#info.title.join()
-	]
+	align(left, par(hanging-indent: 3.4em, text(size: 字号.小二, font: fonts.宋体, spacing: 100%, weight: "bold")[
+		题 目：#info.title.join()
+	]))
 	
 	// 中间标识
 	v(字号.小一 * 2)

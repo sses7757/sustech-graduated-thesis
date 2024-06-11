@@ -260,7 +260,7 @@
 	level: 1,
 	zero-fill: true,
 	leading-zero: true,
-	numbering: "1.1",
+	numbering: "1-1",
 	extra-prefixes: (:),
 	fallback-prefix: "fig:",
 	line-width: 21cm - 6cm,
@@ -286,6 +286,7 @@
 	// move figure spacing and caption algin adjustment here to prevent unwanted spacing in multi-line equations
 	if measure(it.caption).width > line-width {
 		show figure.caption: set align(start + top)
+		show figure.caption: set par(leading: 1em)
 		res
 	} else {
 		res

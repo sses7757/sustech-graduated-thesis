@@ -19,7 +19,7 @@
 		outlined: outlined,
 		title
 	)
-
+	v(1em)
 	// 符号表
 	context align(center, block(width: width,
 		align(start, grid(
@@ -28,6 +28,7 @@
 			..(
 					notations.final().pairs().
 					filter(kv => kv.at(0) != "test").
+					sorted().
 					map(kv => print-notations(..kv.at(1))).
 					filter(v => v != none)
 				).flatten(),
