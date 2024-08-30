@@ -339,7 +339,7 @@
 	it
 ) = {
 	// Allow a way to make default equations.
-	if (not it.block or it.has("label") and str(it.label).starts-with(prefix)) {
+	if (not it.has("block") or not it.block or it.has("label") and str(it.label).starts-with(prefix)) {
 		return it
 	}
 	if ((not it.has("numbering") or it.numbering == none or numbering(it.numbering, 1) == none) and

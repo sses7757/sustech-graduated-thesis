@@ -8,3 +8,5 @@
 #let sfrac(num, denom) = {
   $lr(#_empty-l #num mid(\/) #denom #_empty-r)$
 }
+
+#let hide(value) = context h(measure(value).width)

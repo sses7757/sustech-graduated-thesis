@@ -20,6 +20,7 @@
 #import "utils/indent.typ": indent, fake-par
 #import "utils/style.typ": 字体, 字号
 #import "utils/state-notations.typ": notation, notations
+#import "utils/multi-line-equate.typ": show-figure, equate, equate-ref
 
 #import "@preview/unify:0.6.0": num as _num, qty as _qty, numrange as _numrange, qtyrange as _qtyrange
 #let num(value) = _num(value, multiplier: "×", thousandsep: ",")
