@@ -9,6 +9,10 @@
 - 提供了自动在行内公式两端添加空格的功能，该功能会自动避免在符号两端添加空格。具体使用参见`example.typ`的第1.4节。
 
 
+## 下载
+
+进入[Release界面](https://github.com/sses7757/sustech-graduated-thesis/tags)，选择最新（最上方）的Release Tag进入（比如[v0.1.5](https://github.com/sses7757/sustech-graduated-thesis/releases/tag/v0.1.5)），选择Assets中的`sustech-graduated-thesis.zip`下载解压即可。
+
 ## 使用
 
 该模板基于[南京大学毕业论文Typst模板](https://github.com/nju-lug/modern-nju-thesis)修改，并未修改基本使用逻辑，因此模板的使用请参见[南京大学毕业论文Typst模板](https://github.com/nju-lug/modern-nju-thesis)。
