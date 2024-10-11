@@ -4,7 +4,6 @@
 	bibliography: none,
 	title: "参考文献",
 	full: false,
-	style: "gb-7714-2015-numeric",
 	mapping: (:),
 ) = {
 	assert(bibliography != none, message: "请传入带有 source 的 bibliography 函数。")
@@ -150,6 +149,5 @@
 	bibliography(
 		title: title,
 		full: full,
-		style: style,
 	)
 }

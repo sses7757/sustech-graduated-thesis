@@ -1,4 +1,4 @@
-#import "sustech-master-thesis/utils/multi-line-equate.typ": equate, equate-ref
+#import "sustech-graduated-thesis/utils/multi-line-equate.typ": equate, equate-ref
 
 #set text(lang: "en")
 #set heading(numbering: "1.1")

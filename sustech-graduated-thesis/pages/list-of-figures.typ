@@ -1,6 +1,7 @@
 #import "@preview/i-figured:0.2.4"
 #import "@preview/outrageous:0.1.0"
 #import "../utils/style.typ": 字号, 字体
+#import "outline-page.typ": outline-pagenum, outline-final
 
 // 表格目录生成
 #let list-of-figures(
@@ -33,14 +34,7 @@
 		font = fonts.宋体
 	}
 
-  set page(footer: context [
-    #set align(center)
-    #set text(字号.五号)
-    #counter(page).display(
-      "I of I",
-      both: false,
-    )
-  ])
+  set page(..outline-pagenum())
 
 	// 2.  正式渲染
 	pagebreak(weak: true, to: if twoside { "odd" })
@@ -68,4 +62,5 @@
 
 	// 显示目录
 	i-figured.outline(target-kind: image, title: none)
+	outline-final("lof", twoside: twoside)
 }
