@@ -6,8 +6,8 @@
 #import "../utils/custom-heading.typ": heading-display, active-heading, current-heading
 #import "../utils/indent.typ": fake-par
 #import "../utils/unpairs.typ": unpairs
+#import "../utils/eq-wrap.typ": eq-wrap, arounds_default
 
-#let arounds_default = "、，。！？…；：—‘’“”（）【】《》~!@#$%^&*()-_=+/*[]{}|\\:;'\"<>,./? 　"
 
 #let mainmatter(
 	// documentclass 传入参数
@@ -111,7 +111,7 @@
 	// 3.2 脚注样式
 	show footnote.entry: set text(font: fonts.宋体, size: 字号.五号)
 	// 3.3 设置 figure 的编号
-	show heading: reset-counters
+	show heading: reset-counters.with(extra-kinds: ("algorithm",))
 	show figure: show-figure
 	// 3.4 设置 equation 的编号和假段落首行缩进
 	show math.equation: set text(font: (math-font, ) + fonts.宋体)
@@ -145,6 +145,12 @@
 	): set figure(supplement: "代码")
 	show figure.where(
 		kind: raw
+	): set block(above: 1em, below: 1.5em)
+	show figure.where(
+		kind: "algorithm"
+	): set figure(supplement: "算法")
+	show figure.where(
+		kind: "algorithm"
 	): set block(above: 1em, below: 1.5em)
 	set figure.caption(separator: separator)
 	show figure.caption: set text(font: fonts.宋体, size: caption-size)
@@ -245,63 +251,7 @@
     )
   ])
 
-	// 3.5 inline 公式两边的空格，必须放在最后
-	let eq-wrap(cont) = {
-		if not cont.has("children") {
-			return cont
-		}
-		let cont-fn = cont.func()
-		let cont-fs = cont.fields()
-		let _ = cont-fs.remove("children")
-
-		let map-fn = ((n, elem)) => {
-			if elem.func() in (list.item, enum.item, figure, table, table.cell) {
-				let fs = elem.fields()
-				let _ = fs.remove("body")
-				let lab = if "label" in fs {fs.remove("label")}
-				let _ = if "caption" in fs {fs.insert("caption", eq-wrap(elem.caption.body))}
-				let fn = elem.func()
-				let wrapped = eq-wrap(elem.body)
-				if lab != none and elem.func() in (list.item, enum.item, figure) {
-					[#fn(wrapped, ..fs)#lab]
-				} else {
-					fn(wrapped, ..fs)
-				}
-			} else {
-				if (elem.func() == math.equation and elem.block == false) or repr(elem) == "context()" {
-					if n > 0 {
-						if cont.children.at(n - 1).has("text") {
-							let prev = cont.children.at(n - 1).text.last()
-							if not arounds.contains(prev)  {
-								[ ]
-							}
-						}
-					}
-					elem
-					if n < cont.children.len() - 1 {
-						if cont.children.at(n + 1).has("text") {
-							let next = cont.children.at(n + 1).text.first()
-							if not arounds.contains(next) {
-								[ ]
-							}
-						}
-					}
-				} else {
-					elem
-				}
-			}
-		}
-
-		if repr(cont-fn) == "sequence" {
-			for (n, elem) in cont.children.enumerate() {
-				map-fn((n, elem))
-			}
-		} else {
-			let new-child = cont.children.enumerate().map(map-fn)
-			cont-fn(..new-child, ..cont-fs)
-		}
-	}
-	show: eq-wrap
+	show: eq-wrap.with(arounds: arounds)
 
 	it
 }

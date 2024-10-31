@@ -1,12 +1,12 @@
 #import "../utils/datetime-display.typ": datetime-display, datetime-en-display
 #import "../utils/justify-text.typ": justify-text
 #import "../utils/style.typ": 字号, 字体
+#import "../utils/degree-names.typ": degree-types
 
 // 硕士研究生封面
 #let final-cover(
   // documentclass 传入的参数
-  doctype: "master",
-  degree: "academic",
+  degree: "MEng",
   nl-cover: false,
   anonymous: false,
   twoside: false,
@@ -69,13 +69,7 @@
     info.bottom-date = datetime-display(info.bottom-date)
   }
   // 2.4 处理 degree
-  if (info.degree == auto) {
-    if (doctype == "doctor") {
-      info.degree = "工程博士"
-    } else {
-      info.degree = "工程硕士"
-    }
-  }
+  info.degree = degree-types.at(degree)
 
   // 3.  内置辅助函数
   let info-key(body, info-inset: info-inset, is-meta: false) = {
@@ -159,7 +153,7 @@
 
   // 将中文之间的空格间隙从 0.25 em 调整到 0.5 em
   text(size: 28pt, font: fonts.宋体, spacing: 200%, weight: "bold",
-    if doctype == "doctor" { "博 士 学 位 论 文" } else { "硕 士 学 位 论 文" },
+    if degree == "PhD" { "博 士 学 位 论 文" } else { "硕 士 学 位 论 文" },
   )
   
   if (anonymous) {
@@ -176,16 +170,8 @@
     ..info.title.map((s) => info-value("title", s)).intersperse(info-key("　")),
     info-key("作者姓名"),
     info-value("author", info.author),
-    ..(if degree == "professional" {(
-      {
-        set text(font: fonts.楷体, size: 字号.三号, weight: "bold")
-        move(dy: 0.3em, scale(x: 55%, box(width: 10em, "专业学位类别（领域）")))
-      },
-      info-value("major", info.degree + "（" + info.major + "）"),
-    )} else {(
-      info-key("专业名称"),
-      info-value("major", info.major),
-    )}),
+    info-key("专业名称"),
+    info-value("major", info.major),
     info-key("研究方向"),
     info-value("field", info.field),
     info-key("导师姓名"),
@@ -270,7 +256,7 @@
 
   v(6pt)
 
-  smallcaps(if doctype == "doctor" { "Doctor of phlosophy" } else { "Master" })
+  smallcaps(info.degree.at(1))
 
   v(6pt)
 

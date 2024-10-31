@@ -8,8 +8,7 @@
 // 研究生中文摘要页
 #let abstract(
 	// documentclass 传入的参数
-	doctype: "master",
-	degree: "academic",
+	doctype: "final",
 	anonymous: false,
 	twoside: false,
 	fonts: (:),

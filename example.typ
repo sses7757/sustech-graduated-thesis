@@ -1,6 +1,5 @@
-#import "sustech-graduated-thesis/lib.typ": documentclass, indent, notation, fake-par, 字体
+#import "sustech-graduated-thesis/lib.typ": documentclass, indent, notation, fake-par, 字体, pseudocode, pseudocode-list
 #import "sustech-graduated-thesis/utils/math-utils.typ": sfrac, svec
-
 
 // 参考 modern-nju-thesis：
 // 你首先应该安装 https://github.com/nju-lug/modern-nju-thesis/tree/main/fonts/FangZheng 里的所有字体，
@@ -14,6 +13,7 @@
 	outline-page, list-of-figures, list-of-tables, notation-page, acknowledgement,
 ) = documentclass(
 	doctype: "midterm", // proposal, midterm, final
+	degree: "MEng", // 参考`degree-names.typ`
 	// anonymous: true,  // 盲审模式
 	twoside: true,  // 双面模式，会加入空白页，便于打印
 	// fonts: (楷体: ("Times New Roman", "FZKai-Z03S")), 	// 可自定义字体，先英文字体后中文字体，应传入「宋体」、「黑体」、「楷体」、「仿宋」、「等宽」
@@ -23,7 +23,7 @@
 	// math-breakable: false, // 多行公式可否分割到多页
 	// sep-ref: true, // 是否自动将@ref与其跟随的中文字符分开处理，使用true时应避免含有中文的label或bib
 	info: (
-		title: ("基于Typst的", "南方科技大学学位论文"),
+		title: ("基于Typst的南方科技大学学位论文样例代码"),
 		title-en: "SUSTech Thesis Template for Typst",
 		grade: "20XX",
 		student-id: "1234567890",
@@ -64,14 +64,14 @@
 #set enum(numbering: "（1 a）", indent: 0em)
 #show: mainmatter
 
-// 中文摘要
+// 中文摘要，非最终报告会被隐藏
 #abstract(
 	keywords: ("我", "就是", "测试用", "关键词")
 )[
 	中文摘要
 ]
 
-// 英文摘要
+// 英文摘要，非最终报告会被隐藏
 #abstract-en(
 	keywords: ("Dummy", "Keywords", "Here", "It Is")
 )[
@@ -81,10 +81,10 @@
 // 目录
 #outline-page()
 
-// 插图目录
+// 插图目录，非最终报告会被隐藏
 #list-of-figures()
 
-// 表格目录
+// 表格目录，非最终报告会被隐藏
 #list-of-tables()
 
 // 符号表
@@ -212,11 +212,30 @@ $ <->
 	caption:[代码块],
 ) <code>
 
+如果需要使用伪代码，本模板已经引入了`lovelace`库中的函数，如@fig:pseudo所示。
+
+#figure(
+  kind: "algorithm",
+
+  pseudocode-list(booktabs: true, numbered-title: [样例算法])[
+    + *输入*：$alpha$—样例输入1的解释；$beta$—样例输入2的解释
+    + *输出*：$p$—样例输出1的解释；$q$—样例输出2的解释
+    + *while* 未达到指定要求
+      + $p arrow.l$循环计算$alpha$……
+      + *if* $p > 1$ *then*
+        + $q arrow.l$条件计算$beta$……
+      + *else*
+        + *break*
+      + *end*
+    + *end*
+  ]
+) <pseudo>
+
 == 注意事项
 
 - 为了避免不必要的空格，中文内部（包括标点符号）不能换行。
   否则就像本行，在第一个句号后加入了额外的空格。
-- 为了使得标题后首行文字可以缩进，本模板使用了`#fake-par`，会导致标题行和下一行可能不同页，如@sec:bib，建议使用手动换行“`\`”解决。
+- 为了使得标题后首行文字可以缩进，本模板使用了`#fake-par`，会导致标题行和下一行可能不同页，建议使用手动换行“`\`”解决。
 - 另外，对于行间公式和有序/无序列表之后马上需要另起一段的，需使用`#fake-par`另起一段，仅使用空行无法另起一段。
 - 如需设置全局格式，请在`#show: mainmatter`之前设置，或在设置之后再次应用`#show: mainmatter`，以免模板的某些全局设置失效。
 #fake-par
@@ -297,7 +316,7 @@ $ <ratio2>
 // 默认使用 gb-7714-2015-numeric 样式
 #bilingual-bibliography(full: true)
 
-// 致谢
+// 致谢，非最终报告会被隐藏
 #acknowledgement[
 	感谢modern-nju-thesis模板，感谢SUSTech LaTeX模板。
 ]

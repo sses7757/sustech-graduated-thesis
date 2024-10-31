@@ -21,6 +21,7 @@
 #import "utils/style.typ": 字体, 字号
 #import "utils/state-notations.typ": notation, notations
 #import "utils/multi-line-equate.typ": show-figure, equate, equate-ref
+#import "utils/eq-wrap.typ": eq-wrap
 
 #import "@preview/unify:0.6.0": num as _num, qty as _qty, numrange as _numrange, qtyrange as _qtyrange
 #let num(value) = _num(value, multiplier: "×", thousandsep: ",")
@@ -28,9 +29,29 @@
 #let qty(value, unit, rawunit: false) = _qty(value, unit, rawunit: rawunit, multiplier: "×", thousandsep: ",")
 #let qtyrange(lower, upper, unit, rawunit: false) = _qtyrange(lower, upper, unit, rawunit: rawunit, multiplier: "×", thousandsep: ",")
 
+#import "@preview/lovelace:0.3.0": pseudocode as _pseudocode, pseudocode-list as _pseudocode-list
+#let pseudocode(line-numbering: "1",
+  line-number-supplement: "Line",
+  stroke: 0.5pt + gray,
+  indentation: 1em,
+  hooks: 0pt,
+  line-gap: .8em,
+  booktabs-stroke: black + 1pt,
+  booktabs: false,
+  title: none,
+  numbered-title: none,
+  ..children) = {
+		_pseudocode(line-numbering, line-number-supplement, stroke, indentation, hooks, line-gap, booktabs-stroke, booktabs, title, numbered-title, ..children.map(x => eq-warp(x)))
+	}
+#let pseudocode-list(..config, body) = {
+		let transformed-body = eq-wrap(body)
+		_pseudocode-list(..config, transformed-body)
+	}
+
 // 使用函数闭包特性，通过 `documentclass` 函数类进行全局信息配置，然后暴露出拥有了全局配置的、具体的 `layouts` 和 `templates` 内部函数。
 #let documentclass(
 	doctype: "final",  // "proposal" | "midterm" | "final"，文章类型，默认为最终报告 final
+	degree: "MEng", // 参考`degree-names.typ`
 	twoside: true,  // 双面模式，会加入空白页，便于打印
 	anonymous: false,  // 盲审模式
 	bibliography: none,  // 原来的参考文献函数
@@ -74,12 +95,12 @@
 		supervisor-contact: "南方科技大学 广东省深圳市南山区学苑大道1088号",
 		email: "xyz@mail.sustech.edu.cn",
 		school-code: "518055",
-		degree: "MEng",
 	) + info
 
 	(
 		// 将传入参数再导出
 		doctype: doctype,
+		degree: degree,
 		twoside: twoside,
 		anonymous: anonymous,
 		fonts: fonts,
@@ -127,7 +148,8 @@
 		cover: (..args) => {
 			if doctype == "proposal" or doctype == "midterm" {
 				nonfinal-cover(
-					doctype: doctype,
+					is-midterm: doctype == "midterm",
+					degree: degree,
 					anonymous: anonymous,
 					twoside: twoside,
 					..args,
@@ -136,7 +158,7 @@
 				)
 			} else if doctype == "final" {
 				final-cover(
-					doctype: doctype,
+					degree: degree,
 					anonymous: anonymous,
 					twoside: twoside,
 					..args,
@@ -168,7 +190,7 @@
 		abstract: (..args) => {
 			if doctype == "final" {
 				abstract(
-					doctype: doctype,
+					degree: degree,
 					anonymous: anonymous,
 					twoside: twoside,
 					..args,
@@ -186,7 +208,7 @@
 		abstract-en: (..args) => {
 			if doctype == "final" {
 				abstract-en(
-					doctype: doctype,
+					degree: degree,
 					anonymous: anonymous,
 					twoside: twoside,
 					..args,
@@ -211,20 +233,32 @@
 
 		// 插图目录页
 		list-of-figures: (..args) => {
-			list-of-figures(
-				twoside: twoside,
-				..args,
-				fonts: fonts + args.named().at("fonts", default: (:)),
-			)
+			if doctype == "final" {
+				list-of-figures(
+					twoside: twoside,
+					..args,
+					fonts: fonts + args.named().at("fonts", default: (:)),
+				)
+			} else if doctype == "proposal" or doctype == "midterm" {
+				[]
+			} else {
+				panic("not yet been implemented.")
+			}
 		},
 
 		// 表格目录页
 		list-of-tables: (..args) => {
-			list-of-tables(
-				twoside: twoside,
-				..args,
-				fonts: fonts + args.named().at("fonts", default: (:)),
-			)
+			if doctype == "final" {
+				list-of-tables(
+					twoside: twoside,
+					..args,
+					fonts: fonts + args.named().at("fonts", default: (:)),
+				)
+			} else if doctype == "proposal" or doctype == "midterm" {
+				[]
+			} else {
+				panic("not yet been implemented.")
+			}
 		},
 
 		// 符号表页
@@ -245,11 +279,17 @@
 
 		// 致谢页
 		acknowledgement: (..args) => {
-			acknowledgement(
-				anonymous: anonymous,
-				twoside: twoside,
-				..args,
-			)
+			if doctype == "final" {
+				acknowledgement(
+					anonymous: anonymous,
+					twoside: twoside,
+					..args,
+				)
+			} else if doctype == "proposal" or doctype == "midterm" {
+				[]
+			} else {
+				panic("not yet been implemented.")
+			}
 		},
 	)
 }

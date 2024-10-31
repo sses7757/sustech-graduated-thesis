@@ -6,7 +6,8 @@
 // 硕士研究生封面
 #let nonfinal-cover(
 	// documentclass 传入的参数
-	doctype: "midterm",
+	is-midterm: false,
+	degree: "MEng",
 	anonymous: false,
 	twoside: false,
 	fonts: (:),
@@ -95,10 +96,10 @@
 	)
 	v(字号.小一)
 	text(size: 字号.小一, font: fonts.宋体, spacing: 100%, weight: "bold",
-		if info.degree == "PhD"	{
-			if doctype == "midterm" { "博 士 研 究 生 中 期 考 核 报 告" } else { "博 士 研 究 生 开 题 报 告" }
+		if degree == "PhD"	{
+			if is-midterm { "博 士 研 究 生 中 期 考 核 报 告" } else { "博 士 研 究 生 开 题 报 告" }
 		} else {
-			if doctype == "midterm" { "硕 士 研 究 生 中 期 考 核 报 告" } else { "硕 士 研 究 生 开 题 报 告" }
+			if is-midterm { "硕 士 研 究 生 中 期 考 核 报 告" } else { "硕 士 研 究 生 开 题 报 告" }
 		},
 	)
 	v(字号.小一)
@@ -134,7 +135,7 @@
 		info-key("学 号"),
 		info-value(info.student-id),
 
-		info-key(if doctype == "midterm" {"中 期 考 核 日 期"} else {"开 题 报 告 日 期"}),
+		info-key(if is-midterm {"中 期 考 核 日 期"} else {"开 题 报 告 日 期"}),
 		info-value(info.submit-date),
 	))
 

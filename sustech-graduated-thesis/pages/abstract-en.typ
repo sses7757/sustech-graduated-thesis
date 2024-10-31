@@ -3,13 +3,13 @@
 #import "../utils/indent.typ": fake-par
 #import "../utils/double-underline.typ": double-underline
 #import "../utils/custom-tablex.typ": gridx, colspanx
+#import "../utils/degree-names.typ": degree-types
 // #import "../utils/invisible-heading.typ": invisible-heading
 
 // 研究生英文摘要页
 #let abstract-en(
 	// documentclass 传入的参数
-	doctype: "master",
-	degree: "academic",
+	degree: "MEng",
 	anonymous: false,
 	twoside: false,
 	fonts: (:),
