@@ -23,7 +23,7 @@
 	// math-breakable: false, // 多行公式可否分割到多页
 	// sep-ref: true, // 是否自动将@ref与其跟随的中文字符分开处理，使用true时应避免含有中文的label或bib
 	info: (
-		title: ("基于Typst的南方科技大学学位论文样例代码"),
+		title: ("基于Typst的南方科技大学学位论文"),
 		title-en: "SUSTech Thesis Template for Typst",
 		grade: "20XX",
 		student-id: "1234567890",
