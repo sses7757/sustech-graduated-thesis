@@ -1,5 +1,5 @@
-#import "@preview/anti-matter:0.0.2": anti-inner-end as mainmatter-end
 #import "layouts/doc.typ": doc
+#import "layouts/preface.typ": preface
 #import "layouts/mainmatter.typ": mainmatter, arounds_default
 #import "layouts/appendix.typ": appendix
 #import "pages/fonts-display-page.typ": fonts-display-page
@@ -17,13 +17,12 @@
 #import "utils/bilingual-bibliography.typ": bilingual-bibliography
 #import "utils/custom-numbering.typ": custom-numbering
 #import "utils/custom-heading.typ": heading-display, active-heading, current-heading
-#import "utils/indent.typ": indent, fake-par
 #import "utils/style.typ": 字体, 字号
 #import "utils/state-notations.typ": notation, notations
 #import "utils/multi-line-equate.typ": show-figure, equate, equate-ref
 #import "utils/eq-wrap.typ": eq-wrap
 
-#import "@preview/unify:0.6.0": num as _num, qty as _qty, numrange as _numrange, qtyrange as _qtyrange
+#import "@preview/unify:0.7.1": num as _num, qty as _qty, numrange as _numrange, qtyrange as _qtyrange
 #let num(value) = _num(value, multiplier: "×", thousandsep: ",")
 #let numrange(lower, upper) = _numrange(lower, upper, multiplier: "×", thousandsep: ",")
 #let qty(value, unit, rawunit: false) = _qty(value, unit, rawunit: rawunit, multiplier: "×", thousandsep: ",")
@@ -48,10 +47,13 @@
 		_pseudocode-list(..config, transformed-body)
 	}
 
+#let indent = h(2em)
+
 // 使用函数闭包特性，通过 `documentclass` 函数类进行全局信息配置，然后暴露出拥有了全局配置的、具体的 `layouts` 和 `templates` 内部函数。
 #let documentclass(
 	doctype: "final",  // "proposal" | "midterm" | "final"，文章类型，默认为最终报告 final
 	degree: "MEng", // 参考`degree-names.typ`
+	academic: true, // 是否是学术学位
 	twoside: true,  // 双面模式，会加入空白页，便于打印
 	anonymous: false,  // 盲审模式
 	bibliography: none,  // 原来的参考文献函数
@@ -72,7 +74,7 @@
 		student-id: "1234567890",
 		author: "张三",
 		author-en: "Zhang San",
-		department: "某学院",
+		department: "某系",
 		department-en: "XX Department",
 		major: "某专业",
 		major-en: "XX Major",
@@ -94,7 +96,7 @@
 		secret-level: "公开",
 		supervisor-contact: "南方科技大学 广东省深圳市南山区学苑大道1088号",
 		email: "xyz@mail.sustech.edu.cn",
-		school-code: "518055",
+		school-code: "14325",
 	) + info
 
 	(
@@ -112,6 +114,12 @@
 				info: info + args.named().at("info", default: (:)),
 			)
 		},
+    preface: (..args) => {
+      preface(
+        twoside: twoside,
+        ..args,
+      )
+    },
 		mainmatter: (..args) => {
 			mainmatter(
 					slant-glteq: slant-glteq,
@@ -123,11 +131,6 @@
 					..args,
 					fonts: fonts + args.named().at("fonts", default: (:)),
 				)
-		},
-		mainmatter-end: (..args) => {
-			mainmatter-end(
-				..args,
-			)
 		},
 		appendix: (..args) => {
 			appendix(
@@ -159,6 +162,7 @@
 			} else if doctype == "final" {
 				final-cover(
 					degree: degree,
+					academic: academic,
 					anonymous: anonymous,
 					twoside: twoside,
 					..args,
@@ -190,12 +194,9 @@
 		abstract: (..args) => {
 			if doctype == "final" {
 				abstract(
-					degree: degree,
-					anonymous: anonymous,
 					twoside: twoside,
 					..args,
 					fonts: fonts + args.named().at("fonts", default: (:)),
-					info: info + args.named().at("info", default: (:)),
 				)
 			} else if doctype == "proposal" or doctype == "midterm" {
 				[]
@@ -208,12 +209,9 @@
 		abstract-en: (..args) => {
 			if doctype == "final" {
 				abstract-en(
-					degree: degree,
-					anonymous: anonymous,
 					twoside: twoside,
 					..args,
 					fonts: fonts + args.named().at("fonts", default: (:)),
-					info: info + args.named().at("info", default: (:)),
 				)
 			} else if doctype == "proposal" or doctype == "midterm" {
 				[]

@@ -1,4 +1,3 @@
-#import "@preview/anti-matter:0.0.2": anti-matter
 #import "../utils/style.typ": 字号, 字体
 
 // 前言，重置页面计数器
@@ -20,7 +19,7 @@
 		pagebreak() + " "
 	}
 	counter(page).update(0)
-	anti-matter(spec: spec, ..args, it)
+	set page(numbering: "I")
 
 	// 默认参数
 	fonts = 字体 + fonts
@@ -33,20 +32,20 @@
 
 	// 显示页眉
 	set page(
-    header: locate(loc => {
-        // 获取当前页面的一级标题
-        let cur-heading = current-heading(level: 1, loc)
-        // 如果有一级标题，则渲染页眉
-        if true {
-          let heading = heading-display(active-heading(level: 1, prev: false, loc))
-          set text(font: fonts.宋体, size: 字号.五号)
-          stack(
-            align(center, heading),
-            v(0.25em),
-            line(length: 100%, stroke: 0.5pt + black)
-          )
-        }
-      }
-    )
+    header: context {
+			let loc = here()
+			// 获取当前页面的一级标题
+			let cur-heading = current-heading(level: 1)
+			// 如果有一级标题，则渲染页眉
+			if cur-heading != none {
+				let heading = heading-display(active-heading(level: 1, prev: false, loc))
+				set text(font: fonts.宋体, size: 字号.五号)
+				stack(
+					align(center, heading),
+					v(0.25em),
+					line(length: 100%, stroke: 0.5pt + black)
+				)
+			}
+		}
 	)
 }

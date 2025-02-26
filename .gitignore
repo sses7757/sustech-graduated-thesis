@@ -1,1 +1,4 @@
 *.pdf
+.vscode
+**.docx
+new

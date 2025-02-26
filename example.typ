@@ -1,4 +1,4 @@
-#import "sustech-graduated-thesis/lib.typ": documentclass, indent, notation, fake-par, 字体, pseudocode, pseudocode-list
+#import "sustech-graduated-thesis/lib.typ": documentclass, indent, notation, 字体, pseudocode, pseudocode-list
 #import "sustech-graduated-thesis/utils/math-utils.typ": sfrac, svec
 
 // 参考 modern-nju-thesis：
@@ -7,13 +7,14 @@
 
 #let (
 	// 布局函数
-	twoside, doc, mainmatter, mainmatter-end, appendix,
+	twoside, doc, mainmatter, appendix,
 	// 页面函数
 	fonts-display-page, cover, decl-page, abstract, abstract-en, bilingual-bibliography,
 	outline-page, list-of-figures, list-of-tables, notation-page, acknowledgement,
 ) = documentclass(
 	doctype: "midterm", // proposal, midterm, final
 	degree: "MEng", // 参考`degree-names.typ`
+	academic: true, // 学术学位
 	// anonymous: true,  // 盲审模式
 	twoside: true,  // 双面模式，会加入空白页，便于打印
 	// fonts: (楷体: ("Times New Roman", "FZKai-Z03S")), 	// 可自定义字体，先英文字体后中文字体，应传入「宋体」、「黑体」、「楷体」、「仿宋」、「等宽」
@@ -133,7 +134,7 @@
 
 文档中使用`notation`添加的所有术语均会自动出现在符号表中；同一个`key`，之后的定义会覆盖之前的定义。
 
-本模板还提供了快速定义和引用术语的方式，如全称“#notation("qft", "量子场论", "Quantum Field Theory")”（后两个顺序可互换），无键值“#notation("量子力学", "Quantum Mechanics")”。快速引用如@no:qft和@no:qft-full。
+本模板还提供了快速定义和引用术语的方式，如全称“#notation("qft", "量子场论", "Quantum Field Theory")”（后两个顺序可互换），无键值“#notation("量子力学", "Quantum Mechanics")”。快速引用如#[@no:qft]和@no:qft-full。
 
 
 == 图表
@@ -197,7 +198,7 @@ $ <->
 
 注意事项：
 - 若引用的key以中文开始，请按照上述写法编写引用。
-- 若为全英文引用key，可以使用类似@Jiang1998的写法，无需包裹在content块内部，也不会自动添加不需要的空格，因为本模板的`equate-ref`函数处理了这种情况。该处理同样适用于其他引用，如@eqt:final1引用。
+- 若为全英文引用key，可以使用类似#[@Jiang1998]的写法，无需包裹在content块内部，也不会自动添加不需要的空格，因为本模板的`equate-ref`函数处理了这种情况。该处理同样适用于其他引用，如#[@eqt:final1]引用。
 - 若引用的key不以中文开始却含有中文，本模板在`sep-ref = true`的情况下目前*不能*正确处理，会出现错误，请自行修改引用键值或关闭`sep-ref`并全部使用上述写法编写引用。
 
 == 代码块
@@ -212,7 +213,7 @@ $ <->
 	caption:[代码块],
 ) <code>
 
-如果需要使用伪代码，本模板已经引入了`lovelace`库中的函数，如@fig:pseudo所示。
+如果需要使用伪代码，本模板已经引入了`lovelace`库中的函数，如#[@fig:pseudo]所示。
 
 #figure(
   kind: "algorithm",
@@ -235,16 +236,14 @@ $ <->
 
 - 为了避免不必要的空格，中文内部（包括标点符号）不能换行。
   否则就像本行，在第一个句号后加入了额外的空格。
-- 为了使得标题后首行文字可以缩进，本模板使用了`#fake-par`，会导致标题行和下一行可能不同页，建议使用手动换行“`\`”解决。
-- 另外，对于行间公式和有序/无序列表之后马上需要另起一段的，需使用`#fake-par`另起一段，仅使用空行无法另起一段。
 - 如需设置全局格式，请在`#show: mainmatter`之前设置，或在设置之后再次应用`#show: mainmatter`，以免模板的某些全局设置失效。
-#fake-par
+
 注意事项结束。
 
 
 == 表格自动填充
 
-Typst提供了完整的文件读取和字符串处理处理功能，可以通过少量脚本代码自动生成表格内容，如@tbl:opt-res所示，该脚本读取了`test.csv`文件，将其奇数行视为不同方法在不同问题上的优化结果的平均值，偶数行视为其上一行的标准差，并统一加粗每一个问题上的最优结果。使用时可以自行参考下面的表格生成代码和`table`等Typst自带函数的语法进行修改和自定义。
+Typst提供了完整的文件读取和字符串处理处理功能，可以通过少量脚本代码自动生成表格内容，如#[@tbl:opt-res]所示，该脚本读取了`test.csv`文件，将其奇数行视为不同方法在不同问题上的优化结果的平均值，偶数行视为其上一行的标准差，并统一加粗每一个问题上的最优结果。使用时可以自行参考下面的表格生成代码和`table`等Typst自带函数的语法进行修改和自定义。
 
 #{
 	import "@preview/oxifmt:0.2.1": strfmt
@@ -349,8 +348,3 @@ $
 phi.alt := (1 + sqrt(5)) / 2
 $ <ratio3>
 测试引用@eqt:ratio3。
-
-
-// 正文结束标志，不可缺少
-// 这里放在附录后面，使得页码能正确计数
-#mainmatter-end()

@@ -591,16 +591,16 @@
 				it.element.location(),
 				if supplement not in ([], none) [#supplement#sep#num] else [#num]
 			)
-		} else if sep-ref {
-			// CJK ref
-			let key = it.citation.key
-			let p = str(key).position(regex("\p{script=Han}"))
-			if p == none or p == 0 {
-				return it
-			}
-			let new-key = label(str(key).slice(0, p))
-			let rest = str(key).slice(p)
-			[#ref(new-key)#rest]
+		// } else if sep-ref {
+		// 	// CJK ref
+		// 	let key = it.citation.key
+		// 	let p = str(key).position(regex("\p{script=Han}"))
+		// 	if p == none or p == 0 {
+		// 		return it
+		// 	}
+		// 	let new-key = label(str(key).slice(0, p))
+		// 	let rest = str(key).slice(p)
+		// 	[#new-key\" -- \"#rest]
 		} else {
 			it
 		}

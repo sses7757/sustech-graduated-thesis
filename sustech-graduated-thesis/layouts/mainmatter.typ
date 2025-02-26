@@ -1,10 +1,8 @@
-#import "@preview/anti-matter:0.0.2": anti-front-end
 #import "@preview/i-figured:0.2.4": reset-counters
 #import "../utils/multi-line-equate.typ": show-figure, equate, equate-ref
 #import "../utils/style.typ": 字号, 字体
 #import "../utils/custom-numbering.typ": custom-numbering
 #import "../utils/custom-heading.typ": heading-display, active-heading, current-heading
-#import "../utils/indent.typ": fake-par
 #import "../utils/unpairs.typ": unpairs
 #import "../utils/eq-wrap.typ": eq-wrap, arounds_default
 
@@ -53,7 +51,7 @@
 	it,
 ) = {
 	// 0.  标志前言结束
-	anti-front-end()
+	set page(numbering: "1")
 
 	// 1.  默认参数
 	fonts = 字体 + fonts
@@ -69,10 +67,10 @@
 		.filter((pair) => pair.at(0).starts-with("heading-"))
 		.map((pair) => (pair.at(0).slice("heading-".len()), pair.at(1)))
 	// 1.3 处理伪粗体和增大代码字体
-	show text.where(weight: "bold").or(strong): it => {
-  	show regex("\p{script=Han}"): set text(stroke: 0.02857em)
-  	it
-	}
+	// show text.where(weight: "bold").or(strong): it => {
+  // 	show regex("\p{script=Han}"): set text(stroke: 0.02857em)
+  // 	it
+	// }
 
 	// 2.  辅助函数
 	let array-at(arr, pos) = {
@@ -82,31 +80,13 @@
 	// 3.  设置基本样式
 	// 3.1 文本和段落样式
 	set text(hyphenate: true, ..text-args)
-	show "“": set text(font: fonts.宋体.slice(1))
-	show "”": set text(font: fonts.宋体.slice(1))
-	show "”、": [”#h(-0.25em)、]
-	show "”，": [”#h(-0.25em)，]
-	show "”。": [”#h(-0.25em)。]
-	show "”！": [”#h(-0.25em)！]
-	show "”？": [”#h(-0.25em)？]
-	show "”；": [”#h(-0.25em)；]
-	show "”：": [”#h(-0.25em)：]
-	show "”—": [”#h(-0.25em)—]
-	show "”）": [”#h(-0.25em)）]
-	show "）”": [）#h(-0.25em)”]
-	show "、“": [、#h(-0.25em)“]
-	show "，“": [，#h(-0.25em)“]
-	show "，“": [，#h(-0.25em)“]
-	show "。“": [。#h(-0.25em)“]
-	show "！“": [！#h(-0.25em)“]
-	show "？“": [？#h(-0.25em)“]
-	show "（“": [（#h(-0.25em)“]
 	set par(
 		leading: leading,
 		justify: justify,
-		first-line-indent: first-line-indent
+		first-line-indent: first-line-indent,
+		spacing: spacing,
+		linebreaks: "optimized"
 	)
-	show par: set block(spacing: spacing)
 	show raw: set text(font: fonts.等宽, size: 1.175em, baseline: -0.05em)
 	// 3.2 脚注样式
 	show footnote.entry: set text(font: fonts.宋体, size: 字号.五号)
@@ -172,7 +152,6 @@
 			below: array-at(heading-below, it.level),
 		)
 		it
-		fake-par
 	}
 	// 4.3 标题居中与自动换页
 	show heading: it => {
@@ -197,39 +176,38 @@
 		let num-str = (e.numbering)(..counter(heading).at(e.location()))
 		num-str = num-str.trim()
 		if e.level == 1 {
-			link(it.element.location(), num-str)
+			link(e.location(), num-str)
 		} else {
-			link(it.element.location(), [第#num-str 节])
+			link(e.location(), [第#num-str 节])
 		}
 	}
 
 	// 5.  处理页眉页脚
 	set page(..(if display-header {
 		(
-			header: {
+			header: context {
 				// 重置 footnote 计数器
 				if reset-footnote {
 					counter(footnote).update(0)
 				}
-				locate(loc => {
-					// 5.1 获取当前页面的一级标题
-					let cur-heading = current-heading(level: 1, loc)
-					// 5.2 如果当前页面没有一级标题，则渲染页眉
-					if not skip-on-first-level or cur-heading == none {
-						if header-render == auto {
-							let heading = heading-display(active-heading(level: 1, prev: false, loc))
-							set text(font: fonts.宋体, size: 字号.五号)
-							stack(
-								align(center, heading),
-								v(0.25em),
-								line(length: 100%, stroke: stroke-width + black)
-							)
-						} else {
-							header-render(loc)
-						}
-						v(header-vspace)
+        let loc = here()
+				// 5.1 获取当前页面的一级标题
+				let cur-heading = current-heading(level: 1)
+				// 5.2 如果当前页面没有一级标题，则渲染页眉
+				if not skip-on-first-level or cur-heading == none {
+					if header-render == auto {
+						let heading = heading-display(active-heading(level: 1, prev: false, loc))
+						set text(font: fonts.宋体, size: 字号.五号)
+						stack(
+							align(center, heading),
+							v(0.25em),
+							line(length: 100%, stroke: stroke-width + black)
+						)
+					} else {
+						header-render(loc)
 					}
-				})
+					v(header-vspace)
+				}
 			}
 		)
 	} else {
@@ -253,5 +231,6 @@
 
 	show: eq-wrap.with(arounds: arounds)
 
+  counter(page).update(1)
 	it
 }

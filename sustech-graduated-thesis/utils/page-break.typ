@@ -6,11 +6,12 @@
 
 #let page-break(twoside: true) = {
   if twoside {
-    	locate(loc => {
+    context {
+      let loc = here()
       let pn = counter(page).at(loc).at(0)
       if calc.rem(pn, 2) == 1 {
         _page-break()
       }
-    })
+    }
   }
 }
