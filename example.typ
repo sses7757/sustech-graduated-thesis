@@ -24,7 +24,7 @@
   notation-page,
   acknowledgement,
 ) = documentclass(
-  doctype: "midterm", // proposal, midterm, final
+  doctype: "final", // proposal, midterm, final
   degree: "MEng", // 参考`degree-names.typ`
   academic: true, // 学术学位
   // anonymous: true,  // 盲审模式
@@ -78,12 +78,31 @@
 #show: mainmatter
 
 // 中文摘要，非最终报告会被隐藏
-#abstract(keywords: ("我", "就是", "测试用", "关键词"))[
+#abstract(keywords: ("我", "就是", "测试用", "关键词", "关键词", "关键词", "关键词", "关键词", "关键词"))[
   中文摘要
 ]
 
 // 英文摘要，非最终报告会被隐藏
-#abstract-en(keywords: ("Dummy", "Keywords", "Here", "It Is"))[
+#abstract-en(
+  keywords: (
+    "Dummy",
+    "Keywords",
+    "Here",
+    "It Is",
+    "It Is",
+    "It Is",
+    "It Is",
+    "It Is",
+    "It Is",
+    "It Is",
+    "It Is",
+    "Keywords",
+    "Keywords",
+    "Keywords",
+    "Keywords",
+    "Keywords",
+  ),
+)[
   English abstract
 ]
 
@@ -106,7 +125,6 @@
 
 
 // 重设页码，开始正文
-
 #counter(page).update(1)
 
 
@@ -143,7 +161,7 @@
 
 文档中使用`notation`添加的所有术语均会自动出现在符号表中；同一个`key`，之后的定义会覆盖之前的定义。
 
-本模板还提供了快速定义和引用术语的方式，如全称“#notation("qft", "量子场论", "Quantum Field Theory")”（后两个顺序可互换），无键值“#notation("量子力学", "Quantum Mechanics")”。快速引用如#[@no:qft]和@no:qft-full。
+本模板还提供了快速定义和引用术语的方式，如全称“#notation("qft", "量子场论", "Quantum Field Theory")”（后两个顺序可互换），无键值“#notation("量子力学", "Quantum Mechanics")”。快速引用如@no:qft和@no:qft-full。
 
 
 == 图表
@@ -207,7 +225,7 @@ $ <->
 
 注意事项：
 - 若引用的key以中文开始，请按照上述写法编写引用。
-- 若为全英文引用key，可以使用类似@Jiang1998的写法，无需包裹在content块内部，也不会自动添加不需要的空格，因为本模板的`equate-ref`函数处理了这种情况。该处理同样适用于其他引用，如@eqt:final1引用。
+- 若为全英文引用key，可以使用类似@Jiang1998的写法，无需包裹在content块内部，也不会自动添加不需要的空格，因为本模板的内置函数自动处理了这种情况。该处理同样适用于其他引用，如@eqt:final1引用。
 - 若引用的key不以中文开始却含有中文，本模板在`sep-ref = true`的情况下目前*不能*正确处理，会出现错误，请自行修改引用键值或关闭`sep-ref`并全部使用上述写法（`#[@...]`）编写引用。
 
 == 代码块
@@ -222,7 +240,7 @@ $ <->
   caption: [代码块],
 ) <code>
 
-如果需要使用伪代码，本模板已经引入了`lovelace`库中的函数，如#[@fig:pseudo]所示。
+如果需要使用伪代码，本模板已经引入了`lovelace`库中的函数，如@fig:pseudo所示。
 
 #figure(
   kind: "algorithm",
@@ -250,7 +268,7 @@ $ <->
 
 == 表格自动填充
 
-Typst提供了完整的文件读取和字符串处理处理功能，可以通过少量脚本代码自动生成表格内容，如#[@tbl:opt-res]所示，该脚本读取了`test.csv`文件，将其奇数行视为不同方法在不同问题上的优化结果的平均值，偶数行视为其上一行的标准差，并统一加粗每一个问题上的最优结果。使用时可以自行参考下面的表格生成代码和`table`等Typst自带函数的语法进行修改和自定义。
+Typst提供了完整的文件读取和字符串处理处理功能，可以通过少量脚本代码自动生成表格内容，如@tbl:opt-res所示，该脚本读取了`test.csv`文件，将其奇数行视为不同方法在不同问题上的优化结果的平均值，偶数行视为其上一行的标准差，并统一加粗每一个问题上的最优结果。使用时可以自行参考下面的表格生成代码和`table`等Typst自带函数的语法进行修改和自定义。
 
 #{
   import "@preview/oxifmt:0.2.1": strfmt
@@ -321,65 +339,10 @@ $
 $ <ratio2>
 测试引用@eqt:ratio2。
 
-= 正文
 
-== 正文子标题
+#heading(level: 1, numbering: none, "结　论")
 
-=== 正文子子标题
-
-公式编号测试：
-$
-  phi.alt := (1 + sqrt(5)) / 2
-$ <ratio3>
-测试引用@eqt:ratio3。
-
-= 正文
-
-== 正文子标题
-
-=== 正文子子标题
-
-公式编号测试：
-$
-  phi.alt := (1 + sqrt(5)) / 2
-$ <ratio4>
-测试引用@eqt:ratio4。
-
-= 正文
-
-== 正文子标题
-
-=== 正文子子标题
-
-公式编号测试：
-$
-  phi.alt := (1 + sqrt(5)) / 2
-$ <ratio5>
-测试引用@eqt:ratio5。
-
-= 正文
-
-== 正文子标题
-
-=== 正文子子标题
-
-公式编号测试：
-$
-  phi.alt := (1 + sqrt(5)) / 2
-$ <ratio6>
-测试引用@eqt:ratio6。
-
-= 正文
-
-== 正文子标题
-
-=== 正文子子标题
-
-公式编号测试：
-$
-  phi.alt := (1 + sqrt(5)) / 2
-$ <ratio7>
-测试引用@eqt:ratio7。
+测试结论。
 
 
 // 中英双语参考文献

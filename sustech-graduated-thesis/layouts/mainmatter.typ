@@ -201,10 +201,7 @@
     footer: context [
       #set align(center)
       #set text(字号.五号)
-      #counter(page).display(
-        "1 of 1",
-        both: false,
-      )
+      #counter(page).display(both: false)
     ],
   )
 

@@ -1,6 +1,5 @@
-#import "../utils/datetime-display.typ": datetime-display, datetime-en-display
+#import "../utils/datetime-display.typ": datetime-display, datetime-en-display, datetime-display-upper
 #import "../utils/justify-text.typ": justify-text
-#import "../utils/page-break.typ": page-break
 #import "../utils/style.typ": 字号, 字体
 #import "../utils/degree-names.typ": degree-types
 
@@ -40,8 +39,6 @@
     "chairman",
     "reviewer",
   ),
-  datetime-display: datetime-display,
-  datetime-en-display: datetime-en-display,
 ) = {
   // 1.  默认参数
   fonts = 字体 + fonts
@@ -67,16 +64,16 @@
   if type(info.title-en) == array {
     info.title-en = info.title-en.sum()
   }
-  assert(type(info.submit-date) == datetime, message: "submit-date must be datetime.")
-  if type(info.defend-date) == datetime {
-    info.defend-date = datetime-display(info.defend-date)
-  }
-  if type(info.confer-date) == datetime {
-    info.confer-date = datetime-display(info.confer-date)
-  }
-  if type(info.bottom-date) == datetime {
-    info.bottom-date = datetime-display(info.bottom-date)
-  }
+  // assert(type(info.submit-date) == datetime, message: "submit-date must be datetime.")
+  // if type(info.defend-date) == datetime {
+  //   info.defend-date = datetime-display(info.defend-date)
+  // }
+  // if type(info.confer-date) == datetime {
+  //   info.confer-date = datetime-display(info.confer-date)
+  // }
+  // if type(info.bottom-date) == datetime {
+  //   info.bottom-date = datetime-display(info.bottom-date)
+  // }
   info.degree = degree-types.at(degree)
 
   // 3.  内置辅助函数
@@ -128,64 +125,58 @@
 
 
   // 4.  正式渲染
-  page-break(twoside: twoside)
 
   // 居中对齐
   set align(center)
 
   // 4.1 封面页
-  v(2cm)
-  grid(align: top, columns: 1, rows: (2cm, auto, 3cm, 4cm, 4cm),
-  [],
-  [
-    #set par(spacing: 0.5em, leading: 0.75em)
-    #set text(size: 字号.小一, font: fonts.宋体, weight: "bold")
-    #(if degree == "PhD" { [博士] } else { [硕士] })#(if academic { [] } else { [专业] })学位论文
-  ],
-  [
-    #set text(size: 字号.二号, font: fonts.黑体)
-    #info.title
-  ],
-  [
-    #set text(size: 字号.小二, font: fonts.宋体)
-    #upper(info.title-en)
-  ],
-  []
+  grid(
+    align: top,
+    columns: 1,
+    rows: (2cm, 1.38cm, 2cm, 3cm, 4cm, 3cm),
+    [],
+    [
+      #set par(spacing: 0.5em, leading: 0.75em)
+      #set text(size: 字号.小一, font: fonts.宋体, weight: "bold")
+      #let t = (
+        (if degree == "PhD" { "博 士 " } else { "硕 士 " }) + (if academic { "" } else { "专 业 " }) + "学 位 论 文"
+      )
+      #box(width: 42%, justify-text(t))
+    ],
+
+    [],
+    [
+      #set text(size: 字号.二号, font: fonts.黑体)
+      #info.title
+    ],
+
+    [
+      #set text(size: 字号.小二, font: fonts.宋体, weight: "bold")
+      #upper(info.title-en)
+    ],
+
+    [],
   )
+  set text(size: 字号.小二, font: fonts.宋体)
+  grid(
+    columns: (3.33cm, 3.7cm, 0.15cm, 0.82cm, 1fr),
+    rows: (1cm, 1cm),
+    align: left,
+    [], [#justify-text("研 究 生")], [], [：], info.author,
+    [], [#justify-text("指 导 教 师")], [], [：], info.supervisor.join(),
+  )
+  grid(
+    align: top,
+    columns: 1,
+    rows: (2cm, 1.24cm, 1.24cm),
+    [],
+    [南方科技大学],
+    [#datetime-display-upper(info.defend-date)],
+  )
+
+  // 4.2 中文题名页
+
   // TODO
-
-  // // 将中文之间的空格间隙从 0.25 em 调整到 0.5 em
-  // text(size: 28pt, font: fonts.宋体, spacing: 200%, weight: "bold",
-  //   (if degree == "PhD" { "博士" } else { "硕士" }) + (if academic { "" } else { "专业" }) + "学位论文",
-  // )
-
-  // if (anonymous) {
-  //   v(132pt)
-  // } else {
-  //   v(30pt)
-  // }
-
-  // block(width: 294pt, grid(
-  //   columns: (info-key-width, 1fr),
-  //   column-gutter: info-column-gutter,
-  //   row-gutter: info-row-gutter,
-  //   // info-key("论文题目"),
-  //   // ..info.title.map((s) => info-value("title", s)).intersperse(info-key("　")),
-  //   info-key("学位申请人"),
-  //   info-value("author", info.author),
-  //   info-key("指导教师"),
-  //   info-value("supervisor", info.supervisor.intersperse(" ").sum()),
-  //   ..(if info.supervisor-ii != () {(
-  //     info-key("　"),
-  //     info-value("supervisor-ii", info.supervisor-ii.intersperse(" ").sum()),
-  //   )} else { () }),
-  //   info-key("学科名称"),
-  //   info-value("major", info.major),
-  //   info-key("答辩日期"),
-  //   info-value("defend-date", info.defend-date),
-  //   info-key("培养单位"),
-  //   info-value("defend-date", info.defend-date),
-  // ))
 
   // v(50pt)
 
