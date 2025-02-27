@@ -52,9 +52,15 @@
     field-en: "XX Field",
     supervisor: ("李四", "教授"),
     supervisor-en: "Professor Li Si",
+    clc: "O643.12", // 国内图书分类号
+    udc: "544.4", // 国际图书分类号
+    school-code: "14325",
+    secret-level: "公开",
     // supervisor-ii: ("王五", "副教授"),
     // supervisor-ii-en: "Professor My Supervisor",
     submit-date: datetime.today(),
+    defend-date: datetime.today(), // 答辩时间，一般为当年5月份
+    bottom-date: datetime.today(), // 封面时间，一般为当年6月份
   ),
   // 参考文献源
   bibliography: bibliography.with("example.bib", style: "sustech-graduated-thesis/gb-t-7714-2015-numeric.csl"),

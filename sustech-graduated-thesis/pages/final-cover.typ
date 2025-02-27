@@ -53,6 +53,7 @@
       supervisor: ("李四", "教授"),
       submit-date: datetime.today(),
       defend-date: datetime.today(),
+      bottom-date: datetime.today(),
     )
       + info
   )
@@ -64,16 +65,6 @@
   if type(info.title-en) == array {
     info.title-en = info.title-en.sum()
   }
-  // assert(type(info.submit-date) == datetime, message: "submit-date must be datetime.")
-  // if type(info.defend-date) == datetime {
-  //   info.defend-date = datetime-display(info.defend-date)
-  // }
-  // if type(info.confer-date) == datetime {
-  //   info.confer-date = datetime-display(info.confer-date)
-  // }
-  // if type(info.bottom-date) == datetime {
-  //   info.bottom-date = datetime-display(info.bottom-date)
-  // }
   info.degree = degree-types.at(degree)
 
   // 3.  内置辅助函数
