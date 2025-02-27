@@ -17,7 +17,12 @@
 	// 2.  基本的样式设置
 	set text(fallback: fallback, hyphenate: auto)
 	set par(justify: true)
-	set page(margin: margin, header-ascent: 20%, footer-descent: 20%)
+	set page(margin: margin, header-ascent: 12.5%, footer-descent: 20%)
+	// 处理伪粗体和增大代码字体
+	show text.where(weight: "bold").or(strong): it => {
+  	show regex("\p{script=Han}"): set text(stroke: 0.02857em, weight: "regular")
+  	it
+	}
 
 	// 3.  PDF 元信息
 	set document(

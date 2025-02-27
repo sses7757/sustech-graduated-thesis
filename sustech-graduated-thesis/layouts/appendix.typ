@@ -18,7 +18,7 @@
 	// 设置 figure 的编号
 	show figure: show-figure
 	// 设置 equation 的编号
-	set math.equation(numbering: "(A.1.a)")
+	set math.equation(numbering: "(A-1a)")
 	page-break()
 	it
 }

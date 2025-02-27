@@ -146,8 +146,10 @@
 	}
 
 	// set text(lang: "zh")
+	heading(level: 1, numbering: none, outlined: true, title)
+	[~]
 	bibliography(
-		title: title,
+		title: none,
 		full: full,
 	)
 }

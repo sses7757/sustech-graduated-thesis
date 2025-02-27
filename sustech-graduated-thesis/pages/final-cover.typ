@@ -134,7 +134,6 @@
   set align(center)
 
   // 4.1 封面页
-  set page(margin: 3cm)
   v(2cm)
   grid(align: top, columns: 1, rows: (2cm, auto, 3cm, 4cm, 4cm),
   [],

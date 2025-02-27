@@ -2,7 +2,6 @@
 // The majority of this file is originated from "EpicEricEE/typst-plugins/equate" with MIT license, with my modification to fit current demands.
 // The `show-figure` function is originated from "RubixDev/typst-i-figured" with MIT license, with my modification to work with the rest of the functions.
 
-
 // Element function for alignment points.
 #let align-point = $&$.body.func()
 
@@ -394,8 +393,9 @@
 		if it.number-align.x == start { right } else { left }
 	}
 
+	let ori-lines = to-lines(it)
 	let lines = replace-labels(
-		to-lines(it),
+		ori-lines,
 		has-main-label,
 		it.numbering,
 		it.supplement,
@@ -591,16 +591,16 @@
 				it.element.location(),
 				if supplement not in ([], none) [#supplement#sep#num] else [#num]
 			)
-		// } else if sep-ref {
-		// 	// CJK ref
-		// 	let key = it.citation.key
-		// 	let p = str(key).position(regex("\p{script=Han}"))
-		// 	if p == none or p == 0 {
-		// 		return it
-		// 	}
-		// 	let new-key = label(str(key).slice(0, p))
-		// 	let rest = str(key).slice(p)
-		// 	[#new-key\" -- \"#rest]
+		} else if sep-ref {
+			// CJK ref
+			let key = it.citation.key
+			let p = str(key).position(regex("\p{script=Han}"))
+			if p == none or p == 0 {
+				return it
+			}
+			let new-key = label(str(key).slice(0, p))
+			let rest = str(key).slice(p)
+			[#ref(new-key)#rest]
 		} else {
 			it
 		}
