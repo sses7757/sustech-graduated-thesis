@@ -23,7 +23,7 @@
   heading-font: auto,
   heading-size: (字号.三号, 字号.四号, 13pt, 字号.小四),
   heading-weight: ("regular",),
-  heading-above: (24pt + 0.5em, 24pt, 12pt),
+  heading-above: (24pt + 0.5em, 24pt, 22pt),
   heading-below: (18pt + 0.75em, 6pt + 1em, 6pt + 1em),
   heading-pagebreak: (true, false),
   heading-align: (center, auto),

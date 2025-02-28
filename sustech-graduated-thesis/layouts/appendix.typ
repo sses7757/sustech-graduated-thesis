@@ -1,5 +1,6 @@
 #import "../utils/multi-line-equate.typ": show-figure
 #import "../utils/custom-numbering.typ": custom-numbering
+#import "../utils/eq-wrap.typ": eq-wrap, arounds_default
 
 // 后记，重置 heading 计数器
 #let appendix(
@@ -19,5 +20,6 @@
   show figure: show-figure
   // 设置 equation 的编号
   set math.equation(numbering: "(A-1a)")
+  show: eq-wrap.with(arounds: arounds_default)
   it
 }
