@@ -12,6 +12,8 @@
   twoside: false,
   fonts: (:),
   info: (:),
+  reviewers: none,
+  committee: none,
   // 其他参数
   stoke-width: 0.5pt,
   info-inset: (x: 0pt, bottom: 0.5pt),

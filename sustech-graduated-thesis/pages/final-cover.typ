@@ -13,21 +13,19 @@
   twoside: false,
   fonts: (:),
   info: (:),
-  // 其他参数
-  stoke-width: 0.5pt,
-  info-inset: (x: 0pt, bottom: 0.5pt),
-  info-key-width: 86pt,
-  info-column-gutter: 18pt,
-  info-row-gutter: 12pt,
-  meta-block-inset: (left: -15pt),
-  meta-info-inset: (x: 0pt, bottom: 2pt),
-  meta-info-key-width: 35pt,
-  meta-info-column-gutter: 10pt,
-  meta-info-row-gutter: 1pt,
-  defense-info-inset: (x: 0pt, bottom: 0pt),
-  defense-info-key-width: 110pt,
-  defense-info-column-gutter: 2pt,
-  defense-info-row-gutter: 12pt,
+  reviewers: (
+    [刘XX], [教授], [南方科技大学],
+    [陈XX], [副教授], [XXXX大学],
+    [杨XX], [研究员], [中国XXXX科学院XXXXXXX研究所]
+  ),
+  committee: (
+    [主席], [赵 XX], [教授], [南方科技大学],
+    [委员], [刘 XX], [教授], [南方科技大学],
+    [], [杨 XX], [研究员], [中国 XXXX 科学院],
+    [], [黄 XX], [教授], [XXXXXX 研究所],
+    [], [周 XX], [副教授], [XXXX 大学],
+    [秘书], [吴 XX], [助理研究员], [南方科技大学]
+  ),
   anonymous-info-keys: (
     "student-id",
     "author",
@@ -68,25 +66,10 @@
   info.degree = degree-types.at(degree)
 
   // 3.  内置辅助函数
-  let info-key(body, info-inset: info-inset, is-meta: false) = {
-    set text(
-      font: if is-meta { fonts.宋体 } else { fonts.楷体 },
-      size: if is-meta { 字号.小五 } else { 字号.三号 },
-      weight: if is-meta { "regular" } else { "bold" },
-    )
-    rect(
-      width: 100%,
-      inset: info-inset,
-      stroke: none,
-      justify-text(with-tail: is-meta, body),
-    )
-  }
-
-  let info-value(key, body, info-inset: info-inset, is-meta: false, no-stroke: false) = {
+  let info-value(key, body, is-meta: false, no-stroke: false) = {
     set align(center)
     rect(
       width: 100%,
-      inset: info-inset,
       stroke: if no-stroke { none } else { (bottom: stoke-width + black) },
       text(
         font: if is-meta { fonts.宋体 } else { fonts.楷体 },
@@ -108,11 +91,6 @@
       body
     }
   }
-
-  let meta-info-key = info-key.with(info-inset: meta-info-inset, is-meta: true)
-  let meta-info-value = info-value.with(info-inset: meta-info-inset, is-meta: true)
-  let defense-info-key = info-key.with(info-inset: defense-info-inset)
-  let defense-info-value = info-value.with(info-inset: defense-info-inset)
 
 
   // 4.  正式渲染
@@ -305,9 +283,7 @@
     row-gutter: 0pt,
     columns: (19.8%, 19.8%, 68.5%),
     rows: 20pt,
-    [刘XX], [教授], [南方科技大学],
-    [陈XX], [副教授], [XXXX大学],
-    [杨XX], [研究员], [中国XXXX科学院XXXXXXX研究所],
+    ..reviewers
   )
 
   set text(font: fonts.黑体, size: 字号.四号)
@@ -323,11 +299,6 @@
     row-gutter: 0pt,
     columns: (18.3%, 19.8%, 29.5%, 32.2%),
     rows: 20pt,
-    [主席], [赵 XX], [教授], [南方科技大学],
-    [委员], [刘 XX], [教授], [南方科技大学],
-    [], [杨 XX], [研究员], [中国 XXXX 科学院],
-    [], [黄 XX], [教授], [XXXXXX 研究所],
-    [], [周 XX], [副教授], [XXXX 大学],
-    [秘书], [吴 XX], [助理研究员], [南方科技大学],
+    ..committee
   )
 }
