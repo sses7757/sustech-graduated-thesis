@@ -1,11 +1,11 @@
 // 显示中文日期
 #let datetime-display(date) = {
-  date.display("[year] 年 [month] 月 [day] 日")
+  date.display("[year] 年 [month padding:none] 月")
 }
 
 // 显示英文日期
 #let datetime-en-display(date) = {
-  date.display("[month repr:short] [day], [year]")
+  date.display("[month repr:short], [year]")
 }
 
 // 显示中文大写年月

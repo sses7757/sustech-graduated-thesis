@@ -76,7 +76,7 @@
 
   // 3.  设置基本样式
   // 3.1 文本和段落样式
-  set text(hyphenate: true, ..text-args)
+  set text(..text-args)
   set par(
     leading: leading,
     justify: justify,

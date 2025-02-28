@@ -119,10 +119,14 @@
 
   // 居中对齐
   set align(center)
+  set par(first-line-indent: (amount: 0pt, all: true))
 
   // 4.1 封面页
   grid(
-    align: top,
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    align: top + center,
     columns: 1,
     rows: (2cm, 1.38cm, 2cm, 3cm, 4cm, 3cm),
     [],
@@ -130,9 +134,9 @@
       #set par(spacing: 0.5em, leading: 0.75em)
       #set text(size: 字号.小一, font: fonts.宋体, weight: "bold")
       #let t = (
-        (if degree == "PhD" { "博 士 " } else { "硕 士 " }) + (if academic { "" } else { "专 业 " }) + "学 位 论 文"
+        (if degree == "PhD" { "博士" } else { "硕士" }) + (if academic { "" } else { "专业" }) + "学位论文"
       )
-      #box(width: 42%, justify-text(t))
+      #t
     ],
 
     [],
@@ -150,11 +154,14 @@
   )
   set text(size: 字号.小二, font: fonts.宋体)
   grid(
-    columns: (3.33cm, 3.7cm, 0.15cm, 0.82cm, 1fr),
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: (3.33cm, 3.8cm, 0.05cm, 0.82cm, 1fr),
     rows: (1cm, 1cm),
     align: left,
-    [], [#justify-text("研 究 生")], [], [：], info.author,
-    [], [#justify-text("指 导 教 师")], [], [：], info.supervisor.join(),
+    [], [#justify-text("研究生", split-by: "")], [], [：], info.author,
+    [], [#justify-text("指导教师", split-by: "")], [], [：], info.supervisor.join(),
   )
   grid(
     align: top,
@@ -164,111 +171,163 @@
     [南方科技大学],
     [#datetime-display-upper(info.defend-date)],
   )
+  pagebreak(to: "odd")
 
   // 4.2 中文题名页
+  set text(size: 字号.小四, font: fonts.宋体, weight: "regular")
+  grid(
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: 1,
+    rows: (字号.小四 * 1.25, 字号.小四 * 1.25),
+    [国内图书分类号：#info.clc #h(1fr) 学校代码：#info.school-code],
+    [国际图书分类号：#info.udc #h(1fr) 密级：#info.secret-level~~],
+  )
+  grid(
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: 1,
+    align: top,
+    rows: (3.5cm, 1cm, 1cm, 3cm, 5.27cm),
+    [],
+    [
+      #set text(size: 字号.小二, font: fonts.宋体, weight: "bold")
+      #(
+        if academic { info.degree.at(0) } else {
+          info.major-short + if info.degree.at(0).contains("硕士") { "硕士" } else { "博士" }
+        }
+          + "学位论文"
+      )
+    ],
 
-  // TODO
+    [],
+    [
+      #set text(size: 字号.二号, font: fonts.黑体, weight: "regular")
+      #info.title
+    ],
 
-  // v(50pt)
+    [],
+  )
+  set text(size: 字号.四号, font: fonts.宋体)
+  let distr = justify-text.with(split-by: "", text-args: (font: fonts.黑体))
+  grid(
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: (3.85cm, 3.1cm, 0.09cm, 0.53cm, 1fr),
+    rows: (1cm, 1cm),
+    align: left,
+    [], [#distr("学位申请人")], [], [：], info.author,
+    [], [#distr("指导教师")], [], [：], info.supervisor.join(),
+    ..(
+      if info.supervisor-ii != () {
+        ([], [], [], [], info.supervisor-ii.join())
+      } else { () }
+    ),
+    [], [#distr(if academic { "学科名称" } else { "专业类别" })], [], [：], info.major,
+    [], [#distr("答辩日期")], [], [：], datetime-display(info.defend-date),
+    [], [#distr("培养单位")], [], [：], info.department,
+    [], [#distr("学位授予单位")], [], [：], [南方科技大学],
+  )
 
-  // text(font: fonts.楷体, size: 字号.三号, datetime-display(info.submit-date))
+  // 4.3 英文题名页
+  set text(size: 字号.三号, font: fonts.宋体, weight: "regular")
+  set par(leading: 1em, spacing: 1.5em)
+  grid(
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: 1,
+    align: top,
+    rows: (字号.一号 * 1.2, 8.26cm - 字号.一号 * 1.2, 4.75cm, 2.75cm, 3cm),
+    [],
+    [
+      #set text(size: 字号.二号, font: fonts.宋体, weight: "bold")
+      #upper(info.title-en)
+    ],
 
+    [
+      A dissertation submitted to \
+      Southern University of Science and Technology \
+      in partial fulfillment of the requirement \
+      for the degree of \
+      #if academic { info.degree.at(1) } else {
+        if info.degree.at(0).contains("硕士") { "Master of " } else { "Doctor of " } + info.major-en-short
+      }
+    ],
 
-  // // 第二页
-  // pagebreak(weak: true)
+    if academic [
+      in \
+      #info.major-en
+    ] else [],
 
-  // v(161pt)
+    [
+      by \
+      #info.author-en
+    ],
+  )
+  grid(
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: (0.7fr, 0.75cm, 1fr),
+    rows: (1.23cm, 1.23cm, 0.49cm, 0.5cm),
+    align: (right, left, left),
+    [Supervisor], [~:], info.supervisor-en,
+    ..(
+      if info.supervisor-ii != () {
+        ([Associate Supervisor], [~:], info.supervisor-ii-en)
+      } else { ([], [], []) }
+    ),
+    grid.cell(colspan: 3)[],
+    grid.cell(colspan: 3, align: center)[#datetime-en-display(info.defend-date)],
+  )
+  pagebreak(weak: true)
 
-  // block(width: 284pt, grid(
-  //   columns: (defense-info-key-width, 1fr),
-  //   column-gutter: defense-info-column-gutter,
-  //   row-gutter: defense-info-row-gutter,
-  //   defense-info-key("答辩委员会主席"),
-  //   defense-info-value("chairman", info.chairman),
-  //   defense-info-key("评阅人"),
-  //   ..info.reviewer.map((s) => defense-info-value("reviewer", s)).intersperse(defense-info-key("　")),
-  //   defense-info-key("论文答辩日期"),
-  //   defense-info-value("defend-date", info.defend-date, no-stroke: true),
-  // ))
+  // 4.3 评阅人
+  set text(font: fonts.黑体, size: 字号.三号)
+  set par(leading: 1em, spacing: 1em)
+  v(24pt)
+  [学位论文公开评阅人和答辩委员会名单]
+  v(18pt)
+  set text(font: fonts.黑体, size: 字号.四号)
+  v(24pt)
+  [公开评阅人名单]
+  v(6pt)
 
-  // v(216pt)
+  set text(font: fonts.宋体, size: 字号.小四)
+  grid(
+    align: center,
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: (19.8%, 19.8%, 68.5%),
+    rows: 20pt,
+    [刘XX], [教授], [南方科技大学],
+    [陈XX], [副教授], [XXXX大学],
+    [杨XX], [研究员], [中国XXXX科学院XXXXXXX研究所],
+  )
 
-  // align(left, box(width: 7.3em, text(font: fonts.楷体, size: 字号.三号, weight: "bold", justify-text(with-tail: true, "研究生签名"))))
+  set text(font: fonts.黑体, size: 字号.四号)
+  v(24pt)
+  [答辩委员会名单]
+  v(6pt)
 
-  // v(7pt)
-
-  // align(left, box(width: 7.3em, text(font: fonts.楷体, size: 字号.三号, weight: "bold", justify-text(with-tail: true, "导师签名"))))
-
-  // // 第三页英文封面页
-  // pagebreak(weak: true)
-
-  // set text(font: fonts.楷体, size: 字号.小四)
-  // set par(leading: 1.3em)
-
-  // v(45pt)
-
-  // text(font: fonts.黑体, size: 字号.二号, weight: "bold", info.title-en.intersperse("\n").sum())
-
-  // v(36pt)
-
-  // text(size: 字号.四号)[by]
-
-  // v(-6pt)
-
-  // text(font: fonts.黑体, size: 字号.四号, weight: "bold", anonymous-text("author-en", info.author-en))
-
-  // v(11pt)
-
-  // text(size: 字号.四号)[Supervised by]
-
-  // v(-6pt)
-
-  // text(font: fonts.黑体, size: 字号.四号, anonymous-text("supervisor-en", info.supervisor-en))
-
-  // if info.supervisor-ii-en != "" {
-  //   v(-4pt)
-
-  //   text(font: fonts.黑体, size: 字号.四号, anonymous-text("supervisor-ii-en", info.supervisor-ii-en))
-
-  //   v(-9pt)
-  // }
-
-  // v(26pt)
-
-  // [
-  //   A dissertation submitted to  \
-  //   the graduate school of #(if not anonymous { "Nanjing University" })  \
-  //   in partial fulfilment of the requirements for the degree of  \
-  // ]
-
-  // v(6pt)
-
-  // smallcaps(info.degree.at(1))
-
-  // v(6pt)
-
-  // [in]
-
-  // v(6pt)
-
-  // info.major-en
-
-  // v(46pt)
-
-  // if not anonymous {
-  // }
-
-  // v(28pt)
-
-  // info.department-en
-
-  // v(2pt)
-
-  // if not anonymous {
-  //   [Nanjing University]
-  // }
-
-  // v(28pt)
-
-  // datetime-en-display(info.submit-date)
+  set text(font: fonts.宋体, size: 字号.小四)
+  grid(
+    align: center,
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: (18.3%, 19.8%, 29.5%, 32.2%),
+    rows: 20pt,
+    [主席], [赵 XX], [教授], [南方科技大学],
+    [委员], [刘 XX], [教授], [南方科技大学],
+    [], [杨 XX], [研究员], [中国 XXXX 科学院],
+    [], [黄 XX], [教授], [XXXXXX 研究所],
+    [], [周 XX], [副教授], [XXXX 大学],
+    [秘书], [吴 XX], [助理研究员], [南方科技大学],
+  )
 }

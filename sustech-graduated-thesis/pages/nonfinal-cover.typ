@@ -117,7 +117,7 @@
       row-gutter: info-row-gutter,
 
       info-key("院 （系）"),
-      info-value(info.dept),
+      info-value(info.department),
 
       info-key("学 科"),
       info-value(info.major),

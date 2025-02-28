@@ -26,7 +26,7 @@
 ) = documentclass(
   doctype: "final", // proposal, midterm, final
   degree: "MEng", // 参考`degree-names.typ`
-  academic: true, // 学术学位
+  academic: true, // 学术学位，若为false需要传入info.major-short
   // anonymous: true,  // 盲审模式
   twoside: true, // 双面模式，会加入空白页，便于打印
   // fonts: (楷体: ("Times New Roman", "FZKai-Z03S")), 	// 可自定义字体，先英文字体后中文字体，应传入「宋体」、「黑体」、「楷体」、「仿宋」、「等宽」
@@ -42,22 +42,22 @@
     student-id: "1234567890",
     author: "张三",
     author-en: "Zhang San",
-    department: "某学院",
+    department: "某系",
     department-en: "XX Department",
-    dept: "某系",
-    dept-en: "XX Department",
     major: "某专业",
+    major-short: "材料与XX",
     major-en: "XX Major",
+    major-en-short: "Materials and XX",
     field: "某方向",
     field-en: "XX Field",
     supervisor: ("李四", "教授"),
-    supervisor-en: "Professor Li Si",
+    supervisor-en: "Prof. Li Si",
     clc: "O643.12", // 国内图书分类号
     udc: "544.4", // 国际图书分类号
     school-code: "14325",
     secret-level: "公开",
     // supervisor-ii: ("王五", "副教授"),
-    // supervisor-ii-en: "Professor My Supervisor",
+    // supervisor-ii-en: "Prof. My Supervisor",
     submit-date: datetime.today(),
     defend-date: datetime.today(), // 答辩时间，一般为当年5月份
     bottom-date: datetime.today(), // 封面时间，一般为当年6月份
@@ -137,7 +137,7 @@
 = 导　论
 
 自动断字测试：
-#lorem(50)
+#lorem(40)
 
 == 列表
 
