@@ -1,102 +1,75 @@
-#import "../utils/datetime-display.typ": datetime-display, datetime-en-display
+#import "../utils/datetime-display.typ": datetime-display, datetime-en-display, datetime-display-upper
 #import "../utils/justify-text.typ": justify-text
 #import "../utils/style.typ": 字号, 字体
+#import "../utils/degree-names.typ": degree-types
 
 // 硕士研究生封面
 #let final-cover(
   // documentclass 传入的参数
-  doctype: "master",
-  degree: "academic",
+  degree: "MEng",
+  academic: true,
   nl-cover: false,
   anonymous: false,
   twoside: false,
   fonts: (:),
   info: (:),
-  // 其他参数
-  stoke-width: 0.5pt,
-  min-title-lines: 2,
-  min-reviewer-lines: 5,
-  info-inset: (x: 0pt, bottom: 0.5pt),
-  info-key-width: 86pt,
-  info-column-gutter: 18pt,
-  info-row-gutter: 12pt,
-  meta-block-inset: (left: -15pt),
-  meta-info-inset: (x: 0pt, bottom: 2pt),
-  meta-info-key-width: 35pt,
-  meta-info-column-gutter: 10pt,
-  meta-info-row-gutter: 1pt,
-  defence-info-inset: (x: 0pt, bottom: 0pt),
-  defence-info-key-width: 110pt,
-  defence-info-column-gutter: 2pt,
-  defence-info-row-gutter: 12pt,
-  anonymous-info-keys: ("student-id", "author", "author-en", "supervisor", "supervisor-en", "supervisor-ii", "supervisor-ii-en", "chairman", "reviewer"),
-  datetime-display: datetime-display,
-  datetime-en-display: datetime-en-display,
+  reviewers: (
+    [刘XX], [教授], [南方科技大学],
+    [陈XX], [副教授], [XXXX大学],
+    [杨XX], [研究员], [中国XXXX科学院XXXXXXX研究所]
+  ),
+  committee: (
+    [主席], [赵 XX], [教授], [南方科技大学],
+    [委员], [刘 XX], [教授], [南方科技大学],
+    [], [杨 XX], [研究员], [中国 XXXX 科学院],
+    [], [黄 XX], [教授], [XXXXXX 研究所],
+    [], [周 XX], [副教授], [XXXX 大学],
+    [秘书], [吴 XX], [助理研究员], [南方科技大学]
+  ),
+  anonymous-info-keys: (
+    "student-id",
+    "author",
+    "author-en",
+    "supervisor",
+    "supervisor-en",
+    "supervisor-ii",
+    "supervisor-ii-en",
+    "chairman",
+    "reviewer",
+  ),
 ) = {
   // 1.  默认参数
   fonts = 字体 + fonts
   info = (
-    title: ("基于 Typst 的", "南京大学学位论文"),
-    grade: "20XX",
-    student-id: "1234567890",
-    author: "张三",
-    department: "某学院",
-    major: "某专业",
-    supervisor: ("李四", "教授"),
-    submit-date: datetime.today(),
-  ) + info
+    (
+      title: ("基于Typst的", "南方科技大学学位论文"),
+      grade: "20XX",
+      student-id: "1234567890",
+      author: "张三",
+      department: "某系",
+      major: "某专业",
+      supervisor: ("李四", "教授"),
+      submit-date: datetime.today(),
+      defend-date: datetime.today(),
+      bottom-date: datetime.today(),
+    )
+      + info
+  )
 
   // 2.  对参数进行处理
-  // 2.1 如果是字符串，则使用换行符将标题分隔为列表
-  if type(info.title) == str {
-    info.title = info.title.split("\n")
+  if type(info.title) == array {
+    info.title = info.title.sum()
   }
-  if type(info.title-en) == str {
-    info.title-en = info.title-en.split("\n")
+  if type(info.title-en) == array {
+    info.title-en = info.title-en.sum()
   }
-  // 2.2 根据 min-title-lines 和 min-reviewer-lines 填充标题和评阅人
-  info.title = info.title + range(min-title-lines - info.title.len()).map((it) => "　")
-  info.reviewer = info.reviewer + range(min-reviewer-lines - info.reviewer.len()).map((it) => "　")
-  // 2.3 处理日期
-  assert(type(info.submit-date) == datetime, message: "submit-date must be datetime.")
-  if type(info.defend-date) == datetime {
-    info.defend-date = datetime-display(info.defend-date)
-  }
-  if type(info.confer-date) == datetime {
-    info.confer-date = datetime-display(info.confer-date)
-  }
-  if type(info.bottom-date) == datetime {
-    info.bottom-date = datetime-display(info.bottom-date)
-  }
-  // 2.4 处理 degree
-  if (info.degree == auto) {
-    if (doctype == "doctor") {
-      info.degree = "工程博士"
-    } else {
-      info.degree = "工程硕士"
-    }
-  }
+  info.degree = degree-types.at(degree)
 
   // 3.  内置辅助函数
-  let info-key(body, info-inset: info-inset, is-meta: false) = {
-    set text(
-      font: if is-meta { fonts.宋体 } else { fonts.楷体 },
-      size: if is-meta { 字号.小五 } else { 字号.三号 },
-      weight: if is-meta { "regular" } else { "bold" },
-    )
-    rect(
-      width: 100%,
-      inset: info-inset,
-      stroke: none,
-      justify-text(with-tail: is-meta, body)
-    )
-  }
-
-  let info-value(key, body, info-inset: info-inset, is-meta: false, no-stroke: false) = {
+  let info-value(key, body, is-meta: false, no-stroke: false) = {
     set align(center)
     rect(
       width: 100%,
-      inset: info-inset,
       stroke: if no-stroke { none } else { (bottom: stoke-width + black) },
       text(
         font: if is-meta { fonts.宋体 } else { fonts.楷体 },
@@ -119,183 +92,213 @@
     }
   }
 
-  let meta-info-key = info-key.with(info-inset: meta-info-inset, is-meta: true)
-  let meta-info-value = info-value.with(info-inset: meta-info-inset, is-meta: true)
-  let defence-info-key = info-key.with(info-inset: defence-info-inset)
-  let defence-info-value = info-value.with(info-inset: defence-info-inset)
-  
 
   // 4.  正式渲染
-  pagebreak(weak: true, to: if twoside { "odd" })
-
-  block(width: 70pt, inset: meta-block-inset, grid(
-    columns: (meta-info-key-width, 1fr),
-    column-gutter: meta-info-column-gutter,
-    row-gutter: meta-info-row-gutter,
-    meta-info-key("学校代码"),
-    meta-info-value("school-code", info.school-code),
-    meta-info-key("分类号"),
-    meta-info-value("clc", info.clc),
-    meta-info-key("密级"),
-    meta-info-value("secret-level", info.secret-level),
-    meta-info-key("UDC"),
-    meta-info-value("udc", info.udc),
-    meta-info-key("学号"),
-    meta-info-value("student-id", info.student-id),
-  ))
 
   // 居中对齐
   set align(center)
+  set par(first-line-indent: (amount: 0pt, all: true))
 
-  // 匿名化处理去掉封面标识
-  if (anonymous) {
-    v(70pt)
-  } else {
-    // 封面图标
-    v(6pt)
-    
-    v(34pt)
-  }
+  // 4.1 封面页
+  grid(
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    align: top + center,
+    columns: 1,
+    rows: (2cm, 1.38cm, 2cm, 3cm, 4cm, 3cm),
+    [],
+    [
+      #set par(spacing: 0.5em, leading: 0.75em)
+      #set text(size: 字号.小一, font: fonts.宋体, weight: "bold")
+      #let t = (
+        (if degree == "PhD" { "博士" } else { "硕士" }) + (if academic { "" } else { "专业" }) + "学位论文"
+      )
+      #t
+    ],
 
-  // 将中文之间的空格间隙从 0.25 em 调整到 0.5 em
-  text(size: 28pt, font: fonts.宋体, spacing: 200%, weight: "bold",
-    if doctype == "doctor" { "博 士 学 位 论 文" } else { "硕 士 学 位 论 文" },
+    [],
+    [
+      #set text(size: 字号.二号, font: fonts.黑体)
+      #info.title
+    ],
+
+    [
+      #set text(size: 字号.小二, font: fonts.宋体, weight: "bold")
+      #upper(info.title-en)
+    ],
+
+    [],
   )
-  
-  if (anonymous) {
-    v(132pt)
-  } else {
-    v(30pt)
-  }
+  set text(size: 字号.小二, font: fonts.宋体)
+  grid(
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: (3.33cm, 3.8cm, 0.05cm, 0.82cm, 1fr),
+    rows: (1cm, 1cm),
+    align: left,
+    [], [#justify-text("研究生", split-by: "")], [], [：], info.author,
+    [], [#justify-text("指导教师", split-by: "")], [], [：], info.supervisor.join(),
+  )
+  grid(
+    align: top,
+    columns: 1,
+    rows: (2cm, 1.24cm, 1.24cm),
+    [],
+    [南方科技大学],
+    [#datetime-display-upper(info.defend-date)],
+  )
+  pagebreak(to: "odd")
 
-  block(width: 294pt, grid(
-    columns: (info-key-width, 1fr),
-    column-gutter: info-column-gutter,
-    row-gutter: info-row-gutter,
-    info-key("论文题目"),
-    ..info.title.map((s) => info-value("title", s)).intersperse(info-key("　")),
-    info-key("作者姓名"),
-    info-value("author", info.author),
-    ..(if degree == "professional" {(
-      {
-        set text(font: fonts.楷体, size: 字号.三号, weight: "bold")
-        move(dy: 0.3em, scale(x: 55%, box(width: 10em, "专业学位类别（领域）")))
-      },
-      info-value("major", info.degree + "（" + info.major + "）"),
-    )} else {(
-      info-key("专业名称"),
-      info-value("major", info.major),
-    )}),
-    info-key("研究方向"),
-    info-value("field", info.field),
-    info-key("导师姓名"),
-    info-value("supervisor", info.supervisor.intersperse(" ").sum()),
-    ..(if info.supervisor-ii != () {(
-      info-key("　"),
-      info-value("supervisor-ii", info.supervisor-ii.intersperse(" ").sum()),
-    )} else { () })
-  ))
+  // 4.2 中文题名页
+  set text(size: 字号.小四, font: fonts.宋体, weight: "regular")
+  grid(
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: 1,
+    rows: (字号.小四 * 1.25, 字号.小四 * 1.25),
+    [国内图书分类号：#info.clc #h(1fr) 学校代码：#info.school-code],
+    [国际图书分类号：#info.udc #h(1fr) 密级：#info.secret-level~~],
+  )
+  grid(
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: 1,
+    align: top,
+    rows: (3.5cm, 1cm, 1cm, 3cm, 5.27cm),
+    [],
+    [
+      #set text(size: 字号.小二, font: fonts.宋体, weight: "bold")
+      #(
+        if academic { info.degree.at(0) } else {
+          info.major-short + if info.degree.at(0).contains("硕士") { "硕士" } else { "博士" }
+        }
+          + "学位论文"
+      )
+    ],
 
-  v(50pt)
+    [],
+    [
+      #set text(size: 字号.二号, font: fonts.黑体, weight: "regular")
+      #info.title
+    ],
 
-  text(font: fonts.楷体, size: 字号.三号, datetime-display(info.submit-date))
+    [],
+  )
+  set text(size: 字号.四号, font: fonts.宋体)
+  let distr = justify-text.with(split-by: "", text-args: (font: fonts.黑体))
+  grid(
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: (3.85cm, 3.1cm, 0.09cm, 0.53cm, 1fr),
+    rows: (1cm, 1cm),
+    align: left,
+    [], [#distr("学位申请人")], [], [：], info.author,
+    [], [#distr("指导教师")], [], [：], info.supervisor.join(),
+    ..(
+      if info.supervisor-ii != () {
+        ([], [], [], [], info.supervisor-ii.join())
+      } else { () }
+    ),
+    [], [#distr(if academic { "学科名称" } else { "专业类别" })], [], [：], info.major,
+    [], [#distr("答辩日期")], [], [：], datetime-display(info.defend-date),
+    [], [#distr("培养单位")], [], [：], info.department,
+    [], [#distr("学位授予单位")], [], [：], [南方科技大学],
+  )
 
+  // 4.3 英文题名页
+  set text(size: 字号.三号, font: fonts.宋体, weight: "regular")
+  set par(leading: 1em, spacing: 1.5em)
+  grid(
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: 1,
+    align: top,
+    rows: (字号.一号 * 1.2, 8.26cm - 字号.一号 * 1.2, 4.75cm, 2.75cm, 3cm),
+    [],
+    [
+      #set text(size: 字号.二号, font: fonts.宋体, weight: "bold")
+      #upper(info.title-en)
+    ],
 
-  // 第二页
+    [
+      A dissertation submitted to \
+      Southern University of Science and Technology \
+      in partial fulfillment of the requirement \
+      for the degree of \
+      #if academic { info.degree.at(1) } else {
+        if info.degree.at(0).contains("硕士") { "Master of " } else { "Doctor of " } + info.major-en-short
+      }
+    ],
+
+    if academic [
+      in \
+      #info.major-en
+    ] else [],
+
+    [
+      by \
+      #info.author-en
+    ],
+  )
+  grid(
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: (0.7fr, 0.75cm, 1fr),
+    rows: (1.23cm, 1.23cm, 0.49cm, 0.5cm),
+    align: (right, left, left),
+    [Supervisor], [~:], info.supervisor-en,
+    ..(
+      if info.supervisor-ii != () {
+        ([Associate Supervisor], [~:], info.supervisor-ii-en)
+      } else { ([], [], []) }
+    ),
+    grid.cell(colspan: 3)[],
+    grid.cell(colspan: 3, align: center)[#datetime-en-display(info.defend-date)],
+  )
   pagebreak(weak: true)
 
-  v(161pt)
-
-  block(width: 284pt, grid(
-    columns: (defence-info-key-width, 1fr),
-    column-gutter: defence-info-column-gutter,
-    row-gutter: defence-info-row-gutter,
-    defence-info-key("答辩委员会主席"),
-    defence-info-value("chairman", info.chairman),
-    defence-info-key("评阅人"),
-    ..info.reviewer.map((s) => defence-info-value("reviewer", s)).intersperse(defence-info-key("　")),
-    defence-info-key("论文答辩日期"),
-    defence-info-value("defend-date", info.defend-date, no-stroke: true),
-  ))
-
-  v(216pt)
-
-  align(left, box(width: 7.3em, text(font: fonts.楷体, size: 字号.三号, weight: "bold", justify-text(with-tail: true, "研究生签名"))))
-
-  v(7pt)
-
-  align(left, box(width: 7.3em, text(font: fonts.楷体, size: 字号.三号, weight: "bold", justify-text(with-tail: true, "导师签名"))))
-
-  // 第三页英文封面页
-  pagebreak(weak: true)
-
-  set text(font: fonts.楷体, size: 字号.小四)
-  set par(leading: 1.3em)
-
-  v(45pt)
-  
-  text(font: fonts.黑体, size: 字号.二号, weight: "bold", info.title-en.intersperse("\n").sum())
-
-  v(36pt)
-
-  text(size: 字号.四号)[by]
-
-  v(-6pt)
-
-  text(font: fonts.黑体, size: 字号.四号, weight: "bold", anonymous-text("author-en", info.author-en))
-
-  v(11pt)
-
-  text(size: 字号.四号)[Supervised by]
-
-  v(-6pt)
-
-  text(font: fonts.黑体, size: 字号.四号, anonymous-text("supervisor-en", info.supervisor-en))
-
-  if info.supervisor-ii-en != "" {
-    v(-4pt)
-    
-    text(font: fonts.黑体, size: 字号.四号, anonymous-text("supervisor-ii-en", info.supervisor-ii-en))
-
-    v(-9pt)
-  }
-
-  v(26pt)
-
-  [
-    A dissertation submitted to  \
-    the graduate school of #(if not anonymous { "Nanjing University" })  \
-    in partial fulfilment of the requirements for the degree of  \
-  ]
-
+  // 4.3 评阅人
+  set text(font: fonts.黑体, size: 字号.三号)
+  set par(leading: 1em, spacing: 1em)
+  v(24pt)
+  [学位论文公开评阅人和答辩委员会名单]
+  v(18pt)
+  set text(font: fonts.黑体, size: 字号.四号)
+  v(24pt)
+  [公开评阅人名单]
   v(6pt)
 
-  smallcaps(if doctype == "doctor" { "Doctor of phlosophy" } else { "Master" })
+  set text(font: fonts.宋体, size: 字号.小四)
+  grid(
+    align: center,
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: (19.8%, 19.8%, 68.5%),
+    rows: 20pt,
+    ..reviewers
+  )
 
+  set text(font: fonts.黑体, size: 字号.四号)
+  v(24pt)
+  [答辩委员会名单]
   v(6pt)
 
-  [in]
-
-  v(6pt)
-
-  info.major-en
-  
-  v(46pt)
-
-  if not anonymous {
-  }
-
-  v(28pt)
-
-  info.department-en
-
-  v(2pt)
-
-  if not anonymous {
-    [Nanjing University]
-  }
-
-  v(28pt)
-
-  datetime-en-display(info.submit-date)
+  set text(font: fonts.宋体, size: 字号.小四)
+  grid(
+    align: center,
+    gutter: 0pt,
+    column-gutter: 0pt,
+    row-gutter: 0pt,
+    columns: (18.3%, 19.8%, 29.5%, 32.2%),
+    rows: 20pt,
+    ..committee
+  )
 }
