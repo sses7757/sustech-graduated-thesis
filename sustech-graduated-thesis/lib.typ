@@ -286,6 +286,7 @@
       bilingual-bibliography(
         bibliography: bibliography,
         ..args,
+        fonts: fonts + args.named().at("fonts", default: (:)),
       )
     },
     // 致谢页

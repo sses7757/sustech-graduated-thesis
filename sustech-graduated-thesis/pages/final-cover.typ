@@ -97,7 +97,7 @@
 
   // 居中对齐
   set align(center)
-  set par(first-line-indent: (amount: 0pt, all: true))
+  set par(first-line-indent: (amount: 0pt, all: true), justify: false)
 
   // 4.1 封面页
   grid(

@@ -63,7 +63,7 @@
     bottom-date: datetime.today(), // 封面时间，一般为当年6月份
   ),
   // 参考文献源
-  bibliography: bibliography.with("example.bib", style: "sustech-graduated-thesis/gb-t-7714-2015-numeric.csl"),
+  bibliography: bibliography.with("example.bib"),
 )
 
 // 文稿设置
@@ -246,6 +246,7 @@ $ <->
 - 若引用的key以中文开始，请按照上述写法编写引用。
 - 若为全英文引用key，可以使用类似@Jiang1998的写法，无需包裹在content块内部，也不会自动添加不需要的空格，因为本模板的内置函数自动处理了这种情况。该处理同样适用于其他引用，如@eqt:final1引用。
 - 若引用的key不以中文开始却含有中文，本模板在`sep-ref = true`的情况下目前*不能*正确处理，会出现错误，请自行修改引用键值或关闭`sep-ref`并全部使用上述写法（`#[@...]`）编写引用。
+- Typst自动处理了连续引用的情况，会自动排序并添加连字符，如#[@蒋有绪1998@中国力学学会1990@Jiang1998]。
 
 == 代码块
 
