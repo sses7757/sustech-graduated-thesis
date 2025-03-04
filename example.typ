@@ -1,4 +1,4 @@
-#import "sustech-graduated-thesis/lib.typ": documentclass, indent, notation, 字体, pseudocode, pseudocode-list
+#import "sustech-graduated-thesis/lib.typ": documentclass, no-indent, notation, 字体, pseudocode, pseudocode-list
 #import "sustech-graduated-thesis/utils/math-utils.typ": sfrac, svec
 
 // 参考 modern-nju-thesis：
@@ -171,6 +171,7 @@
 + 有序列表项二
   + 有序子列表项一
   + 有序子列表项二
+#no-indent[如果在列表之后不希望下一段有缩进，请使用`no-indent`包裹，如本段所示。]
 
 == 术语
 
