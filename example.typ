@@ -97,32 +97,21 @@
 #show: mainmatter
 
 // 中文摘要，非最终报告会被隐藏
-#abstract(keywords: ("我", "就是", "测试用", "关键词", "关键词", "关键词", "关键词", "关键词", "关键词"))[
-  中文摘要
+#abstract(
+  keywords: ("我", "就是", "测试用", "关键词")
+)[
+中文摘要
+
+#lorem(100)
 ]
 
 // 英文摘要，非最终报告会被隐藏
 #abstract-en(
-  keywords: (
-    "Dummy",
-    "Keywords",
-    "Here",
-    "It Is",
-    "It Is",
-    "It Is",
-    "It Is",
-    "It Is",
-    "It Is",
-    "It Is",
-    "It Is",
-    "Keywords",
-    "Keywords",
-    "Keywords",
-    "Keywords",
-    "Keywords",
-  ),
+  keywords: ("Dummy", "Keywords", "Here"),
 )[
-  English abstract
+English abstract
+
+#lorem(100)
 ]
 
 // 目录
