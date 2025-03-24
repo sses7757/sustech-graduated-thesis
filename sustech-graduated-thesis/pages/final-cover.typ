@@ -276,15 +276,26 @@
   v(6pt)
 
   set text(font: fonts.宋体, size: 字号.小四)
-  grid(
-    align: center,
-    gutter: 0pt,
-    column-gutter: 0pt,
-    row-gutter: 0pt,
-    columns: (19.8%, 19.8%, 68.5%),
-    rows: 20pt,
-    ..reviewers
-  )
+  if reviewers.len() == 1 {
+    grid(
+      align: center,
+      gutter: 0pt,
+      column-gutter: 0pt,
+      row-gutter: 0pt,
+      columns: 1,
+      ..reviewers
+    )
+  } else {
+    grid(
+      align: center,
+      gutter: 0pt,
+      column-gutter: 0pt,
+      row-gutter: 0pt,
+      columns: (19.8%, 19.8%, 68.5%),
+      rows: 20pt,
+      ..reviewers
+    )
+  }
 
   set text(font: fonts.黑体, size: 字号.四号)
   v(24pt)

@@ -1,5 +1,6 @@
 #import "sustech-graduated-thesis/lib.typ": documentclass, no-indent, notation, 字体, pseudocode, pseudocode-list
 #import "sustech-graduated-thesis/utils/math-utils.typ": sfrac, svec
+#import "sustech-graduated-thesis/utils/hide-info.typ": hide-info
 
 // 参考 modern-nju-thesis：
 // 你首先应该安装 https://github.com/nju-lug/modern-nju-thesis/tree/main/fonts/FangZheng 里的所有字体，
@@ -78,6 +79,10 @@
     [陈XX], [副教授], [XXXX大学],
     [杨XX], [研究员], [中国XXXX科学院XXXXXXX研究所]
   ),
+  // 或者单个content表示特殊情况
+  // reviewers: (
+  //   [无（全隐名评阅）],
+  // )
   committee: (
     [主席], [赵 XX], [教授], [南方科技大学],
     [委员], [刘 XX], [教授], [南方科技大学],
@@ -392,3 +397,12 @@ $
   "test" + q
 $ <appendix>
 测试引用@eqt:appendix。
+
+
+= 个人简历
+
+可以使用`#hide-info`来隐藏信息，如#hide-info[张三]出生于……。
+
+#let hide-info = hide-info.with(hide: false)
+
+在进行如上设置后，`#hide-info`会取消隐藏，如#hide-info[张三]出生于……。
