@@ -147,7 +147,7 @@
     rows: (2cm, 1.24cm, 1.24cm),
     [],
     [南方科技大学],
-    [#datetime-display-upper(info.defend-date)],
+    [#datetime-display-upper(info.bottom-date)],
   )
   pagebreak(to: "odd")
 
