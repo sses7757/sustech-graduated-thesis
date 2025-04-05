@@ -98,7 +98,7 @@
 
 // 正文
 #set list(indent: 1.1em, marker: ([•], [#text(size: 0.5em, baseline: 0.2em, "■")]))
-#set enum(numbering: "（1 a）", indent: 0em)
+#set enum(numbering: "（1）", indent: 0em)
 #show: mainmatter
 
 // 中文摘要，非最终报告会被隐藏
@@ -159,12 +159,17 @@ English abstract
 
 === 有序列表
 
-有序列表编号请自行使用`#set enum(numbering: "（1 a）", indent: 0em)`等方式修改编号和缩进。
+有序列表编号请自行使用`#set enum(numbering: "①", indent: 0.35em)`等方式修改编号、次级编号和缩进。
 
 + 有序列表项一#lorem(15)
 + 有序列表项二
+  #{
+  set enum(numbering: "①", indent: 0.35em)
+  [
   + 有序子列表项一
   + 有序子列表项二
+  ]
+  }
 #no-indent[如果在列表之后不希望下一段有缩进，请使用`no-indent`包裹，如本段所示。]
 
 == 术语
