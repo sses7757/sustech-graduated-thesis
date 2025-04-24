@@ -67,7 +67,10 @@
   _pseudocode-list(..config, transformed-body)
 }
 
-#let indent = h(2em)
+#let no-indent(body) = {
+  set par(first-line-indent: 0pt)
+  body
+}
 
 // 使用函数闭包特性，通过 `documentclass` 函数类进行全局信息配置，然后暴露出拥有了全局配置的、具体的 `layouts` 和 `templates` 内部函数。
 #let documentclass(
@@ -286,6 +289,7 @@
       bilingual-bibliography(
         bibliography: bibliography,
         ..args,
+        fonts: fonts + args.named().at("fonts", default: (:)),
       )
     },
     // 致谢页

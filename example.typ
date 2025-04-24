@@ -1,5 +1,6 @@
-#import "sustech-graduated-thesis/lib.typ": documentclass, indent, notation, 字体, pseudocode, pseudocode-list
+#import "sustech-graduated-thesis/lib.typ": documentclass, no-indent, notation, 字体, pseudocode, pseudocode-list
 #import "sustech-graduated-thesis/utils/math-utils.typ": sfrac, svec
+#import "sustech-graduated-thesis/utils/hide-info.typ": hide-info
 
 // 参考 modern-nju-thesis：
 // 你首先应该安装 https://github.com/nju-lug/modern-nju-thesis/tree/main/fonts/FangZheng 里的所有字体，
@@ -63,7 +64,7 @@
     bottom-date: datetime.today(), // 封面时间，一般为当年6月份
   ),
   // 参考文献源
-  bibliography: bibliography.with("example.bib", style: "sustech-graduated-thesis/gb-t-7714-2015-numeric.csl"),
+  bibliography: bibliography.with("example.bib"),
 )
 
 // 文稿设置
@@ -78,6 +79,10 @@
     [陈XX], [副教授], [XXXX大学],
     [杨XX], [研究员], [中国XXXX科学院XXXXXXX研究所]
   ),
+  // 或者单个content表示特殊情况
+  // reviewers: (
+  //   [无（全隐名评阅）],
+  // )
   committee: (
     [主席], [赵 XX], [教授], [南方科技大学],
     [委员], [刘 XX], [教授], [南方科技大学],
@@ -93,36 +98,25 @@
 
 // 正文
 #set list(indent: 1.1em, marker: ([•], [#text(size: 0.5em, baseline: 0.2em, "■")]))
-#set enum(numbering: "（1 a）", indent: 0em)
+#set enum(numbering: "（1）", indent: 0em)
 #show: mainmatter
 
 // 中文摘要，非最终报告会被隐藏
-#abstract(keywords: ("我", "就是", "测试用", "关键词", "关键词", "关键词", "关键词", "关键词", "关键词"))[
-  中文摘要
+#abstract(
+  keywords: ("我", "就是", "测试用", "关键词")
+)[
+中文摘要
+
+#lorem(100)
 ]
 
 // 英文摘要，非最终报告会被隐藏
 #abstract-en(
-  keywords: (
-    "Dummy",
-    "Keywords",
-    "Here",
-    "It Is",
-    "It Is",
-    "It Is",
-    "It Is",
-    "It Is",
-    "It Is",
-    "It Is",
-    "It Is",
-    "Keywords",
-    "Keywords",
-    "Keywords",
-    "Keywords",
-    "Keywords",
-  ),
+  keywords: ("Dummy", "Keywords", "Here"),
 )[
-  English abstract
+English abstract
+
+#lorem(100)
 ]
 
 // 目录
@@ -165,12 +159,18 @@
 
 === 有序列表
 
-有序列表编号请自行使用`#set enum(numbering: "（1 a）", indent: 0em)`等方式修改编号和缩进。
+有序列表编号请自行使用`#set enum(numbering: "①", indent: 0.35em)`等方式修改编号、次级编号和缩进。
 
 + 有序列表项一#lorem(15)
 + 有序列表项二
+  #{
+  set enum(numbering: "①", indent: 0.35em)
+  [
   + 有序子列表项一
   + 有序子列表项二
+  ]
+  }
+#no-indent[如果在列表之后不希望下一段有缩进，请使用`no-indent`包裹，如本段所示。]
 
 == 术语
 
@@ -246,6 +246,7 @@ $ <->
 - 若引用的key以中文开始，请按照上述写法编写引用。
 - 若为全英文引用key，可以使用类似@Jiang1998的写法，无需包裹在content块内部，也不会自动添加不需要的空格，因为本模板的内置函数自动处理了这种情况。该处理同样适用于其他引用，如@eqt:final1引用。
 - 若引用的key不以中文开始却含有中文，本模板在`sep-ref = true`的情况下目前*不能*正确处理，会出现错误，请自行修改引用键值或关闭`sep-ref`并全部使用上述写法（`#[@...]`）编写引用。
+- Typst自动处理了连续引用的情况，会自动排序并添加连字符，如#[@蒋有绪1998@中国力学学会1990@Jiang1998]。
 
 == 代码块
 
@@ -401,3 +402,12 @@ $
   "test" + q
 $ <appendix>
 测试引用@eqt:appendix。
+
+
+= 个人简历
+
+可以使用`#hide-info`来隐藏信息，如#hide-info[张三]出生于……。
+
+#let hide-info = hide-info.with(hide: false)
+
+在进行如上设置后，`#hide-info`会取消隐藏，如#hide-info[张三]出生于……。

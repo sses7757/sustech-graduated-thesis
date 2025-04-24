@@ -23,7 +23,7 @@
   heading-font: auto,
   heading-size: (字号.三号, 字号.四号, 13pt, 字号.小四),
   heading-weight: ("regular",),
-  heading-above: (24pt + 0.5em, 24pt, 12pt),
+  heading-above: (24pt + 0.5em, 24pt, 22pt),
   heading-below: (18pt + 0.75em, 6pt + 1em, 6pt + 1em),
   heading-pagebreak: (true, false),
   heading-align: (center, auto),
@@ -116,6 +116,8 @@
   // 4.  处理标题
   // 4.1 设置标题的 Numbering
   set heading(numbering: numbering)
+  show heading.where(level: 4): set heading(bookmarked: false)
+  show heading.where(level: 5): set heading(bookmarked: false)
   // 4.2 设置字体字号
   // 4.3 标题居中与自动换页
   show heading: it => {

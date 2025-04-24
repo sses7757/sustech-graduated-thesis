@@ -19,7 +19,7 @@
 
   heading(level: 1, numbering: none, outlined: outlined, outline-title)
   [
-    #set text(font: fonts.宋体, size: 字号.小四)
+    #set text(font: fonts.宋体, size: 字号.小四, lang: "en")
     #set par(first-line-indent: (amount: 2em, all: true))
     #body
 
