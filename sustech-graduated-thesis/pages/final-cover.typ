@@ -149,7 +149,7 @@
     [南方科技大学],
     [#datetime-display-upper(info.bottom-date)],
   )
-  pagebreak(to: "odd")
+  pagebreak(to: if twoside {"odd"} else {none})
 
   // 4.2 中文题名页
   set text(size: 字号.小四, font: fonts.宋体, weight: "regular")
@@ -307,9 +307,10 @@
     align: center,
     gutter: 0pt,
     column-gutter: 0pt,
-    row-gutter: 0pt,
+    row-gutter: 10pt,
     columns: (18.3%, 19.8%, 29.5%, 32.2%),
-    rows: 20pt,
-    ..committee
+    // rows: 20pt,
+    ..committee.map(c => [#set par(leading: 0.65em, spacing: 1.2em)
+    #c])
   )
 }

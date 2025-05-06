@@ -91,7 +91,7 @@
   show heading: reset-counters.with(extra-kinds: ("algorithm",))
   show figure: show-figure
   // 3.4 设置 equation 的编号和假段落首行缩进
-  show math.equation: set text(font: (math-font,) + fonts.宋体)
+  show math.equation: set text(font: if type(math-font) == array { math-font } else { (math-font,) } + fonts.宋体)
   show math.equation.where(block: true): show-equation.with(breakable: math-breakable)
   show math.equation.where(block: true): set par(leading: 0.5em, spacing: 0em)
   set math.equation(supplement: "公式")
