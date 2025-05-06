@@ -11,7 +11,7 @@
 
 ## 下载
 
-进入[Release界面](https://github.com/sses7757/sustech-graduated-thesis/tags)，选择最新（最上方）的Release Tag进入（比如[v0.2.0](https://github.com/sses7757/sustech-graduated-thesis/releases/tag/v0.2.0)），选择Assets中的`sustech-graduated-thesis.zip`下载解压即可。
+进入[Release界面](https://github.com/sses7757/sustech-graduated-thesis/tags)，选择最新（最上方）的Release Tag进入（比如[v1.0](https://github.com/sses7757/sustech-graduated-thesis/releases/tag/v1.0)），选择Assets中的`sustech-graduated-thesis.zip`下载解压即可。
 
 ## 使用
 
