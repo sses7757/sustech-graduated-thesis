@@ -93,6 +93,7 @@
   info = (
     (
       title: ("基于Typst的", "南方科技大学学位论文"),
+      title-align: left,
       title-en: "SUSTech Thesis Template for Typst",
       grade: "20XX",
       student-id: "1234567890",

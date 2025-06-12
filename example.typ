@@ -25,7 +25,7 @@
   notation-page,
   acknowledgement,
 ) = documentclass(
-  doctype: "final", // proposal, midterm, final
+  doctype: "proposal", // proposal, midterm, final
   degree: "MEng", // 参考`degree-names.typ`
   academic: true, // 学术学位，若为false需要传入info.major-short
   // anonymous: true,  // 盲审模式
@@ -38,6 +38,7 @@
   // sep-ref: true, // 是否自动将@ref与其跟随的中文字符分开处理，使用true时应避免含有中文的label或bib
   info: (
     title: "基于Typst的南方科技大学学位论文",
+    title-align: left, // 标题对齐方式，left或center，final不起效
     title-en: "SUSTech Thesis Template for Typst",
     grade: "20XX",
     student-id: "1234567890",

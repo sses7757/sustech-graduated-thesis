@@ -98,7 +98,7 @@
   v(字号.小一)
   // 题目
   align(
-    left,
+    info.title-align,
     par(
       hanging-indent: 3.25em,
       justify: false,
