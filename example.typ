@@ -248,6 +248,7 @@ $ <->
 - 若为全英文引用key，可以使用类似@Jiang1998的写法，无需包裹在content块内部，也不会自动添加不需要的空格，因为本模板的内置函数自动处理了这种情况。该处理同样适用于其他引用，如@eqt:final1引用。
 - 若引用的key不以中文开始却含有中文，本模板在`sep-ref = true`的情况下目前*不能*正确处理，会出现错误，请自行修改引用键值或关闭`sep-ref`并全部使用上述写法（`#[@...]`）编写引用。
 - Typst自动处理了连续引用的情况，会自动排序并添加连字符，如#[@蒋有绪1998@中国力学学会1990@Jiang1998]。
+- 如果不需要参考文献列表显示全部`.bib`中的文献，请在打印参考列表处将`full: true`改为`full:false`，也即最后代码为`#bilingual-bibliography(full: false)`。
 
 == 代码块
 
@@ -368,7 +369,7 @@ $ <ratio2>
 
 // 中英双语参考文献
 // 默认使用 gb-7714-2015-numeric 样式
-#bilingual-bibliography(full: true)
+#bilingual-bibliography(full: true) // false表示仅显示引用的参考文献列表
 
 // 致谢，非最终报告会被隐藏
 #acknowledgement[
