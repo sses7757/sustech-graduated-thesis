@@ -35,13 +35,27 @@
 )
 
 #import "@preview/lovelace:0.3.0": pseudocode as _pseudocode, pseudocode-list as _pseudocode-list
+
+#let _pseudocode_defaults = (
+  line-numbering: "1",
+  line-number-supplement: "Line",
+  stroke: 0.5pt + gray,
+  indentation: 1em,
+  hooks: 0pt,
+  line-gap: .75em,
+  booktabs-stroke: black + 1pt,
+  booktabs: false,
+  title: none,
+  numbered-title: none,
+)
+
 #let pseudocode(
   line-numbering: "1",
   line-number-supplement: "Line",
   stroke: 0.5pt + gray,
   indentation: 1em,
   hooks: 0pt,
-  line-gap: .8em,
+  line-gap: .75em,
   booktabs-stroke: black + 1pt,
   booktabs: false,
   title: none,
@@ -64,7 +78,9 @@
 }
 #let pseudocode-list(..config, body) = {
   let transformed-body = eq-wrap(body)
-  _pseudocode-list(..config, transformed-body)
+  let c = config.named()
+  c = _pseudocode_defaults + c
+  _pseudocode-list(..c, transformed-body)
 }
 
 #let no-indent(body) = {

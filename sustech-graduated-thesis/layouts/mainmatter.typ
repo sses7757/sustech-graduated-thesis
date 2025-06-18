@@ -39,7 +39,7 @@
   // caption 样式
   caption-size: 11pt,
   // figure 计数
-  show-figure: show-figure,
+  show-figure: show-figure.with(extra-prefixes: ("algorithm": "alg:",)),
   // 公式计数
   show-equation: equate,
   slant-glteq: true,

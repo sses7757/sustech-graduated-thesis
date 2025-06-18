@@ -262,14 +262,14 @@ $ <->
   caption: [代码块],
 ) <code>
 
-如果需要使用伪代码，本模板已经引入了`lovelace`库中的函数，如@fig:pseudo所示。
+如果需要使用伪代码，本模板已经引入了`lovelace`库中的函数，如@alg:pseudo所示。
 
 #figure(
   kind: "algorithm",
 
   pseudocode-list(booktabs: true, numbered-title: [样例算法])[
-    + *输入*：$alpha$—样例输入1的解释；$beta$—样例输入2的解释
-    + *输出*：$p$—样例输出1的解释；$q$—样例输出2的解释
+    - *输入*：$alpha$—样例输入1的解释；$beta$—样例输入2的解释
+    - *输出*：$p$—样例输出1的解释；$q$—样例输出2的解释
     + *while* 未达到指定要求
       + $p arrow.l$循环计算$alpha$……
       + *if* $p > 1$ *then*
@@ -286,6 +286,8 @@ $ <->
 - 如需设置全局格式，请在`#show: mainmatter`之前设置，或在设置之后再次应用`#show: mainmatter`，以免模板的某些全局设置失效。
 - 按照学校要求，应使用有序列表编写毕业论文，本示例为了方便多数情况使用了无序列表。
 - 其他未说明格式要求或存在冲突的，请按照学校规范执行。
+- 对于不同专业的同学，请在`info`中修改专业名称和缩写，或在`degree-names.typ`中添加新的专业名称和缩写。
+- 如果需要修改开题和中期答辩的标题为居中对齐，请在`info`中设置`title-align: center`，否则默认为左对齐。
 
 
 == 表格自动填充
@@ -412,4 +414,4 @@ $ <appendix>
 
 #let hide-info = hide-info.with(hide: false)
 
-在进行如上设置后，`#hide-info`会取消隐藏，如#hide-info[张三]出生于……。
+在进行如上设置`#let hide-info = hide-info.with(hide: false)`后，`#hide-info`会取消隐藏，如#hide-info[张三]出生于……。
